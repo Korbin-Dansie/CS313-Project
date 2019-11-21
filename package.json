@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Korbin-Dansie/CS313-Project/issues"
   },
-  "homepage": "https://github.com/Korbin-Dansie/CS313-Project#readme"
+  "homepage": "https://github.com/Korbin-Dansie/CS313-Project#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }

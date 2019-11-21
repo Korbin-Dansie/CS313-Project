@@ -1,0 +1,31 @@
+#center{
+  text-align: center;
+}
+
+form{
+  border: 2px solid silver;
+  display: inline-block;
+}
+
+label{
+  float: right;
+}
+
+input, select{
+  box-sizing: border-box;
+  width: 100%;
+}
+
+table tr td:nth-child(1){
+  padding-left: 5px;
+}
+
+table tr td:nth-child(2){
+  padding-right: 5px;
+}
+
+#controlButtons{
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}

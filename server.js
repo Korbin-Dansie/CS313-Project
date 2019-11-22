@@ -5,10 +5,10 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 5000;
-
+const TAG = "Sever.js:";
 
 let s3 = process.env.DATABASE_URL;
-console.debug(s3);
+console.debug(TAG + s3);
 
 
 

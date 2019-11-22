@@ -6,6 +6,13 @@ const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 5000;
 
+const aws = require('aws-sdk');
+
+let s3 = process.env.DATABASE_URL;
+console.debug(s3);
+
+
+
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
@@ -18,13 +25,25 @@ app.get('/', (req, res) => {
   res.end();
 });
 
+
+//Set up /api/
+const api = require('./routes/api');
+app.use('/api/', api);
+
+
+//For unkown pages
+// ! Do not put other pages after this
+app.use('*', readUnkownPage);
+
+
+
+
 //Include images
 app.use('/img', express.static(path.join(__dirname, 'public/img')))
 app.use('/css', express.static(path.join(__dirname, 'public/css')))
 
-
-//Redirect if they resqest a none existant url
-app.get('*', readUnkownPage);
+//Test Folder
+app.use('/test', express.static(path.join(__dirname, 'Test')))
 
 app.listen(port);
 console.log("listening on port " + port);

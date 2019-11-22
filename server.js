@@ -6,7 +6,6 @@ const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 5000;
 
-const aws = require('aws-sdk');
 
 let s3 = process.env.DATABASE_URL;
 console.debug(s3);

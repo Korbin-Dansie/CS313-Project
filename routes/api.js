@@ -36,7 +36,7 @@ router.get('/DataBase', (req, res) => {
 
         }
         for (let row of res.rows) {
-            res.write(JSON.stringify(row));
+            console.log("api.js:" + JSON.stringify(row));
         }
         client.end();
     });

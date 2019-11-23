@@ -54,7 +54,7 @@ function readUnkownPage(req, res) {
       res.writeHead(200, {
         "Content-Type": "text/html"
       });
-      res.write("Error Unable To read file." + );
+      res.write("Error Unable To read file. At" + location);
       res.end();
       return;
     }

@@ -5,10 +5,12 @@ const router = express.Router();
 const path = require('path');
 
 const fs = require('fs');
+var testLog = "api.js: SSL=" + process.env.DATABASE_URL;
+console.log(testLog);
 
-
+/*
 const { Client } = require('pg');
-
+console.log("api.js: DataBaseURL=" + process.env.DATABASE_URL)
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: true
@@ -26,6 +28,7 @@ client.query('SELECT * FROM public.rarity;', (err, res) => {
   }
   client.end();
 });
+*/
 
 
 //console.log("API.JS: " +  process.env.DATABASE_URL);
@@ -34,7 +37,9 @@ router.get('/', (req, res) => {
     res.writeHead(200, {
         "Content-Type": "text/plain"
     });
-    res.write("Api File");
+    res.write("Api File\n");
+    res.write(testLog);
+
     res.end();
 });
 

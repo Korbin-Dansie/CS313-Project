@@ -9,6 +9,8 @@ const client = new Client({
     connectionString: process.env.DATABASE_URL,
     ssl: true
 });
+client.connect();
+
 
 router.get('/', (req, res) => {
     res.writeHead(200, {
@@ -22,9 +24,6 @@ router.get('/', (req, res) => {
 
 
 router.get('/DataBase', (req, res) => {
-
-
-    client.connect();
 
     client.query('SELECT * FROM public.rarity;', (err, res) => {
         if (err) {

@@ -9,6 +9,12 @@ const port = process.env.PORT || 5000;
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
+/**********************************************************
+ * Include folders
+ **********************************************************/
+app.use('/img', express.static(path.join(__dirname, 'public/img')))
+app.use('/css', express.static(path.join(__dirname, 'public/css')))
+app.use('/test', express.static(path.join(__dirname, 'Test')))
 
 /**********************************************************
  * Home Page
@@ -27,12 +33,6 @@ app.use('/api/', api);
  **********************************************************/
 app.use('*', readUnkownPage);
 
-/**********************************************************
- * Include folders
- **********************************************************/
-app.use('/img', express.static(path.join(__dirname, 'public/img')))
-app.use('/css', express.static(path.join(__dirname, 'public/css')))
-app.use('/test', express.static(path.join(__dirname, 'Test')))
 
 /**********************************************************
  * Start listening on port

@@ -14,21 +14,22 @@ router.get('/', (req, res) => {
     res.end();
 });
 
-router.get('/r', function(req, res) {
+router.get('/users', function(req, res, next) {
     pg.connect(conString, function(err, client, done) {
+      if (err) {
+        return console.error('error fetching client from pool', err);
+      }
+      console.log("connected to database");
+      client.query('SELECT * FROM users', function(err, result) {
+        done();
         if (err) {
-          return console.error('error fetching client from pool', err);
+          return console.error('error running query', err);
         }
-        console.log("connected to database");
-        client.query('SELECT * FROM users', function(err, result) {
-          done();
-          if (err) {
-            return console.error('error running query', err);
-          }
-          res.send(result);
-        });
+        res.send(result);
       });
-});
+    });
+  });
+  
 
 
 

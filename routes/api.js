@@ -35,8 +35,9 @@ router.get('/r', function (req, res, next) {
         // Log this to the console for debugging purposes.
         console.log("Back from DB with result:");
         console.log(JSON.stringify(result.rows));
+        res.write("Got Here");
     });
-    res.write("Got Here");
+    
     res.end();
 
 });

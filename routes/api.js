@@ -4,34 +4,9 @@ const router = express.Router();
 
 const path = require('path');
 
-const fs = require('fs');
-var testLog = "api.js: SSL=" + process.env.DATABASE_URL;
-console.log(testLog);
-
-/*
-const { Client } = require('pg');
-console.log("api.js: DataBaseURL=" + process.env.DATABASE_URL)
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true
-});
-
-client.connect();
-
-client.query('SELECT * FROM public.rarity;', (err, res) => {
-  if (err) {
-      console.log(err);
-      return;
-  }
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
-  }
-  client.end();
-});
-*/
-
-
-//console.log("API.JS: " +  process.env.DATABASE_URL);
+const {
+    Client
+} = require('pg');
 
 router.get('/', (req, res) => {
     res.writeHead(200, {
@@ -43,34 +18,51 @@ router.get('/', (req, res) => {
     res.end();
 });
 
-router.get('/DataBase', (req, res) => {
-    console.log("Here");
 
-            res.writeHead(200, {
-                "Content-Type": "text/html"
+router.get('/DataBase', (req, res) => {
+    const client = new Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: true
+    });
+
+    client.connect();
+
+    client.query('SELECT * FROM public.rarity;', (err, res) => {
+        if (err) {
+            res.writeHead(404, {
+                "Content-Type": "text/plain"
             });
-            res.write("Got Here\n");
+            res.write("Error Unable to make query to Rarity");
             res.end();
+            return;
+
+        }
+        for (let row of res.rows) {
+            res.write(JSON.stringify(row));
+        }
+        client.end();
+    });
 
 });
 
+
+
+
 router.get('/Data', (req, res) => {
-    fs.readFile(path.join(__dirname, '../Test/info.json'), 'utf8', (err, data) => {
+    const location = path.join(__dirname, '../Test/info.json');
+    fs.readFile(location, 'utf8', (err, data) => {
         if (err) {
             //console.error(err.name + ': ' + err.message);
-            res.writeHead(200, {
-                "Content-Type": "text/html"
+            res.writeHead(404, {
+                "Content-Type": "text/plain"
             });
-            res.write("Error Unable To read file");
+            res.write("Error Unable To read file. At " + location);
             res.end();
             return;
         }
-
-   
-        let student = JSON.parse(data);
-        console.log(student);
-    
-        res.json(student);
+        let info = JSON.parse(data);
+        console.debug(info);
+        res.json(info);
         res.end();
     });
 

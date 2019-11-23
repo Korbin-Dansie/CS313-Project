@@ -3,9 +3,11 @@ const app = express();
 const router = express.Router();
 
 const path = require('path');
-var pg = require('pg');
-var pool = new pg.Pool();
-var conString = process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL;
+const pool = new Pool({
+    connectionString: connectionString
+});
+
 
 
 
@@ -19,22 +21,22 @@ router.get('/', (req, res) => {
     res.end();
 });
 
-router.get('/users', function(req, res, next) {
-    pool.connect(conString, function(err, client, done) {
-      if (err) {
-        return console.error('error fetching client from pool', err);
-      }
-      console.log("connected to database");
-      client.query('SELECT * FROM rarity', function(err, result) {
-        done();
+var sql = "SELECT * FROM public.rarity";
+
+router.get('/users', function (req, res, next) {
+    pool.query(sql, function (err, result) {
+        // If an error occurred...
         if (err) {
-          return console.error('error running query', err);
+            console.log("Error in query: ")
+            console.log(err);
         }
-        res.send(result);
-      });
+
+        // Log this to the console for debugging purposes.
+        console.log("Back from DB with result:");
+        console.log(JSON.stringify(result.rows));
     });
-  });
-  
+});
+
 
 
 

@@ -4,6 +4,7 @@ const router = express.Router();
 
 const path = require('path');
 var pg = require('pg');
+var pool = new pg.Pool();
 var conString = process.env.DATABASE_URL;
 
 
@@ -19,7 +20,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/users', function(req, res, next) {
-    pg.connect(conString, function(err, client, done) {
+    pool.connect(conString, function(err, client, done) {
       if (err) {
         return console.error('error fetching client from pool', err);
       }

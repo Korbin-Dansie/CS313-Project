@@ -4,9 +4,13 @@ const router = express.Router();
 
 const path = require('path');
 const connectionString = process.env.DATABASE_URL + "?ssl=true";
-const { Pool } = require('pg');
+const {
+    Pool
+} = require('pg');
 
-const pool = new Pool({ connectionString: connectionString});
+const pool = new Pool({
+    connectionString: connectionString
+});
 console.log("ENV Variable:" + connectionString);
 
 router.get('/', (req, res) => {
@@ -21,18 +25,19 @@ router.get('/', (req, res) => {
 
 router.get('/r', function (req, res, next) {
     var sql = "SELECT * FROM public.rarity";
-pool.query(sql, function (err, result) {
-    // If an error occurred...
-    if (err) {
-        console.log("Error in query: ")
-        console.log(err);
-    }
+    pool.query(sql, function (err, result) {
+        // If an error occurred...
+        if (err) {
+            console.log("Error in query: ")
+            console.log(err);
+        }
 
-    // Log this to the console for debugging purposes.
-    console.log("Back from DB with result:");
-    console.log(JSON.stringify(result.rows));
+        // Log this to the console for debugging purposes.
+        console.log("Back from DB with result:");
+        console.log(JSON.stringify(result.rows));
+    });
     res.write("Got Here");
-});
+
 });
 
 

@@ -5,26 +5,6 @@ const router = express.Router();
 const path = require('path');
 var pg = require('pg');
 var conString = process.env.DATABASE_URL;
-const pool = new Pool({connectionString: process.env.DATABASE_URL});
-
-pool.query('SELECT * FROM public.rarity;', (err, response) => {
-    if (err) {
-        response.writeHead(404, {
-            "Content-Type": "text/plain"
-        });
-        response.write("Error Unable to make query to Rarity");
-        response.end();
-        console.log("Unable to get request");
-        return;
-
-    }
-    for (let row of response.rows) {
-        console.log("api.js:" + JSON.stringify(row));
-    }
-});
-
-
-
 
 router.get('/', (req, res) => {
     res.writeHead(200, {

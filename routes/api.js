@@ -10,6 +10,22 @@ const client = new Client({
     ssl: true
 });
 client.connect();
+client.query('SELECT * FROM public.rarity;', (err, response) => {
+    if (err) {
+        response.writeHead(404, {
+            "Content-Type": "text/plain"
+        });
+        response.write("Error Unable to make query to Rarity");
+        response.end();
+        return;
+
+    }
+    for (let row of response.rows) {
+        console.log("api.js:" + JSON.stringify(row));
+    }
+    client.end();
+});
+
 
 
 router.get('/', (req, res) => {
@@ -24,22 +40,6 @@ router.get('/', (req, res) => {
 
 
 router.get('/DataBase', (req, res) => {
-
-    client.query('SELECT * FROM public.rarity;', (err, response) => {
-        if (err) {
-            res.writeHead(404, {
-                "Content-Type": "text/plain"
-            });
-            res.write("Error Unable to make query to Rarity");
-            res.end();
-            return;
-
-        }
-        for (let row of res.rows) {
-            console.log("api.js:" + JSON.stringify(row));
-        }
-        client.end();
-    });
 
 });
 

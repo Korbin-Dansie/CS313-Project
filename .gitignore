@@ -1,2 +1,4 @@
 saveInfo.js
 .env
+package-lock.json
+node_modules

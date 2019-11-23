@@ -28,18 +28,15 @@ router.get('/r', function (req, res, next) {
     pool.query(sql, function (err, result) {
         // If an error occurred...
         if (err) {
-            console.log("Error in query: ")
-            console.log(err);
+            console.error("Error in query: ")
+            console.error(err);
         }
 
         // Log this to the console for debugging purposes.
-        console.log("Back from DB with result:");
-        console.log(JSON.stringify(result.rows));
-        res.write("Got Here");
+        console.debug("Back from DB with result:");
+        res.json(JSON.stringify(result.rows));
+        res.end();
     });
-    
-    res.end();
-
 });
 
 

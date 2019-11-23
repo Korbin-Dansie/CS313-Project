@@ -3,7 +3,7 @@ const app = express();
 const router = express.Router();
 
 const path = require('path');
-const connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL + "?ssl=true";
 const { Pool } = require('pg');
 
 const pool = new Pool({ connectionString: connectionString});

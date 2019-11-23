@@ -5,12 +5,6 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 const port = process.env.PORT || 5000;
-const TAG = "Sever.js:";
-
-let s3 = process.env.DATABASE_URL;
-console.debug(TAG + s3);
-
-
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');

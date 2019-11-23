@@ -20,7 +20,7 @@ router.get('/users', function(req, res, next) {
         return console.error('error fetching client from pool', err);
       }
       console.log("connected to database");
-      client.query('SELECT * FROM users', function(err, result) {
+      client.query('SELECT * FROM rarity', function(err, result) {
         done();
         if (err) {
           return console.error('error running query', err);

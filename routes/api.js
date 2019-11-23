@@ -3,8 +3,10 @@ const app = express();
 const router = express.Router();
 
 const path = require('path');
-const { Pool } = require('pg');
-const pool = new Pool();
+var pg = require('pg');
+var conString = process.env.DATABASE_URL;
+
+
 
 var conString = process.env.DATABASE_URL;
 
@@ -17,20 +19,22 @@ router.get('/', (req, res) => {
 });
 
 router.get('/users', function(req, res, next) {
-    pool.connect( (err, client, release) => {
+    pg.connect(conString, function(err, client, done) {
+      if (err) {
+        return console.error('error fetching client from pool', err);
+      }
+      console.log("connected to database");
+      client.query('SELECT * FROM rarity', function(err, result) {
+        done();
         if (err) {
-          return console.error('Error acquiring client', err.stack)
+          return console.error('error running query', err);
         }
-        client.query('Select * from rarity', (err, result) => {
-          release()
-          if (err) {
-            return console.error('Error executing query', err.stack)
-          }
-          console.log(result.rows)
-        })
-      })
+        res.send(result);
+      });
+    });
   });
   
+
 
 
 

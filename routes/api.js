@@ -4,6 +4,8 @@ const router = express.Router();
 
 const path = require('path');
 const connectionString = process.env.DATABASE_URL;
+const { Pool } = require('pg');
+
 const pool = new Pool({ connectionString: connectionString});
 
 router.get('/', (req, res) => {

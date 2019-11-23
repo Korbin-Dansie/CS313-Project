@@ -14,6 +14,7 @@ app.set('view engine', 'ejs');
  **********************************************************/
 app.use('/img', express.static(path.join(__dirname, 'public/img')))
 app.use('/css', express.static(path.join(__dirname, 'public/css')))
+app.use('/js', express.static(path.join(__dirname, 'public/js')))
 app.use('/test', express.static(path.join(__dirname, 'Test')))
 
 /**********************************************************

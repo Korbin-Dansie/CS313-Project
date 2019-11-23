@@ -19,6 +19,25 @@ const pool = new Pool({
 router.get('/', readAPIHomepage);
 
 /**********************************************************
+ *  Product Table
+ *  Main table
+ **********************************************************/
+router.get('/productTable', function (req, res, next) {
+    var sql = "select Products.id AS ProductsID, Category.name AS CategoryName, Sub_Category.name AS Sub_CategoryName, Rarity.name AS RarityName, Products.name AS ProductsName, Products.quantity AS ProductsQuantity, Products.price AS ProductsPrice from products left OUTER JOIN Rarity ON products.rarityid = Rarity.id left OUTER JOIN Sub_Category ON products.sub_categoryid = Sub_Category.id left OUTER JOIN Category ON Sub_Category.categoryid = Category.id ORDER BY ProductsID ASC";
+    pool
+        .query(sql)
+        .then(result => {
+            console.debug("Back From database with results.");
+            res.json(result.rows);
+        })
+        .catch(e =>
+            setImmediate(() => {
+                console.error('Error executing query', e.stack);
+            })
+        )
+});
+
+/**********************************************************
  * Rarity
  **********************************************************/
 router.get('/rarity', function (req, res, next) {

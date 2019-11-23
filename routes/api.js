@@ -37,6 +37,7 @@ router.get('/r', function (req, res, next) {
         console.log(JSON.stringify(result.rows));
     });
     res.write("Got Here");
+    res.end();
 
 });
 

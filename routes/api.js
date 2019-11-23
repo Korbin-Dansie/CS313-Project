@@ -7,6 +7,7 @@ const connectionString = process.env.DATABASE_URL;
 const { Pool } = require('pg');
 
 const pool = new Pool({ connectionString: connectionString});
+console.log("ENV Variable:" + connectionString);
 
 router.get('/', (req, res) => {
     res.writeHead(200, {

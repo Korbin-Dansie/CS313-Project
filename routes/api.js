@@ -4,9 +4,11 @@ const router = express.Router();
 
 const path = require('path');
 
-const {
-    Client
-} = require('pg');
+const { Client } = require('pg');
+const client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: true
+});
 
 router.get('/', (req, res) => {
     res.writeHead(200, {
@@ -20,10 +22,7 @@ router.get('/', (req, res) => {
 
 
 router.get('/DataBase', (req, res) => {
-    const client = new Client({
-        connectionString: process.env.DATABASE_URL,
-        ssl: true
-    });
+
 
     client.connect();
 

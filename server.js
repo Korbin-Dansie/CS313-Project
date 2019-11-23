@@ -47,13 +47,14 @@ console.log("listening on port " + port);
  **********************************************************/
 function readUnkownPage(req, res) {
   //console.log("Current path is: "+ path.join(__dirname));
-  fs.readFile(path.join(__dirname, 'views/pages/unknownPage.html'), 'utf8', (err, data) => {
+  var location = path.join(__dirname, 'views/pages/unknownPage.html');
+  fs.readFile(location, 'utf8', (err, data) => {
     if (err) {
       //console.error(err.name + ': ' + err.message);
       res.writeHead(200, {
         "Content-Type": "text/html"
       });
-      res.write("Error Unable To read file");
+      res.write("Error Unable To read file." + );
       res.end();
       return;
     }

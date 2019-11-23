@@ -35,7 +35,7 @@ router.get('/r', (req, res) => {
         }
         for (let row of response.rows) {
             console.log("api.js:" + JSON.stringify(row));
-            response.write(row);
+            response.write(JSON.stringify(row));
         }
         client.end();
     });

@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/users', function(req, res, next) {
-    pool.connect(conString, (err, release) => {
+    pool.connect( (err, client, release) => {
         if (err) {
           return console.error('Error acquiring client', err.stack)
         }

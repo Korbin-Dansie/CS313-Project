@@ -3,13 +3,25 @@ const app = express();
 const router = express.Router();
 
 const path = require('path');
+var pg = require('pg');
+var conString = process.env.DATABASE_URL;
+const pool = new Pool({connectionString: process.env.DATABASE_URL});
 
-const { Client } = require('pg');
-const client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: true
+pool.query('SELECT * FROM public.rarity;', (err, response) => {
+    if (err) {
+        response.writeHead(404, {
+            "Content-Type": "text/plain"
+        });
+        response.write("Error Unable to make query to Rarity");
+        response.end();
+        console.log("Unable to get request");
+        return;
+
+    }
+    for (let row of response.rows) {
+        console.log("api.js:" + JSON.stringify(row));
+    }
 });
-client.connect();
 
 
 
@@ -22,23 +34,20 @@ router.get('/', (req, res) => {
     res.end();
 });
 
-router.get('/r', (req, res) => {
-    client.query('SELECT * FROM public.rarity;', (err, response) => {
+router.get('/r', function(req, res) {
+    pg.connect(conString, function(err, client, done) {
         if (err) {
-            response.writeHead(404, {
-                "Content-Type": "text/plain"
-            });
-            response.write("Error Unable to make query to Rarity");
-            response.end();
-            return;
-    
+          return console.error('error fetching client from pool', err);
         }
-        for (let row of response.rows) {
-            console.log("api.js:" + JSON.stringify(row));
-            response.write(JSON.stringify(row));
-        }
-        client.end();
-    });
+        console.log("connected to database");
+        client.query('SELECT * FROM users', function(err, result) {
+          done();
+          if (err) {
+            return console.error('error running query', err);
+          }
+          res.send(result);
+        });
+      });
 });
 
 

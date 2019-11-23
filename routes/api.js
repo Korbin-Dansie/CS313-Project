@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
+const fs = require('fs');
 
 const path = require('path');
 const connectionString = process.env.DATABASE_URL + "?ssl=true";
@@ -15,18 +16,12 @@ const pool = new Pool({
 /**********************************************************
  * Home Page
  **********************************************************/
-router.get('/', (req, res) => {
-    res.writeHead(200, {
-        "Content-Type": "text/plain"
-    });
-    res.write("Api File");
-    res.end();
-});
+router.get('/', readAPIHomepage);
 
 /**********************************************************
  * Rarity
  **********************************************************/
-router.get('/r', function (req, res, next) {
+router.get('/rarity', function (req, res, next) {
     var sql = "SELECT * FROM public.rarity";
     pool
         .query(sql)
@@ -64,6 +59,31 @@ router.get('/Data', (req, res) => {
     });
 
 });
+
+/**********************************************************
+ * Functions Down Here
+ **********************************************************/
+function readAPIHomepage(req, res) {
+    //console.log("Current path is: "+ path.join(__dirname));
+    var location = path.join(__dirname, '../views/pages/api.html');
+    fs.readFile(location, 'utf8', (err, data) => {
+        if (err) {
+            console.error("Error reading API File", err);
+            res.writeHead(404, {
+                "Content-Type": "text/html"
+            });
+            res.write("Error Reading file");
+            res.end();
+            return;
+        }
+
+        res.writeHead(200, {
+            "Content-Type": "text/html"
+        });
+        res.write(data);
+        res.end();
+    });
+}
 
 /**********************************************************
  * Export File

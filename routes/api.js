@@ -21,7 +21,7 @@ router.get('/users', function(req, res, next) {
         if (err) {
           return console.error('Error acquiring client', err.stack)
         }
-        client.query('SELECT NOW()', (err, result) => {
+        client.query('Select * from rarity', (err, result) => {
           release()
           if (err) {
             return console.error('Error executing query', err.stack)

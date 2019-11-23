@@ -17,7 +17,10 @@ router.get('/', (req, res) => {
     res.end();
 });
 
-var sql = "SELECT * FROM public.rarity";
+
+
+router.get('/r', function (req, res, next) {
+    var sql = "SELECT * FROM public.rarity";
 pool.query(sql, function (err, result) {
     // If an error occurred...
     if (err) {
@@ -29,8 +32,6 @@ pool.query(sql, function (err, result) {
     console.log("Back from DB with result:");
     console.log(JSON.stringify(result.rows));
 });
-
-router.get('/users', function (req, res, next) {
 });
 
 

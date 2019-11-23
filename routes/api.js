@@ -12,6 +12,9 @@ const pool = new Pool({
     connectionString: connectionString
 });
 
+/**********************************************************
+ * Home Page
+ **********************************************************/
 router.get('/', (req, res) => {
     res.writeHead(200, {
         "Content-Type": "text/plain"
@@ -20,29 +23,28 @@ router.get('/', (req, res) => {
     res.end();
 });
 
-
-
+/**********************************************************
+ * Rarity
+ **********************************************************/
 router.get('/r', function (req, res, next) {
     var sql = "SELECT * FROM public.rarity";
-    pool.query(sql, function (err, result) {
-        // If an error occurred...
-        if (err) {
-            console.error("Error in query: ")
-            console.error(err);
-        }
-
-        // Log this to the console for debugging purposes.
-        console.debug("Back from DB with result:");
-        res.json(result.rows);
-        res.end();
-    });
+    pool
+        .query(sql)
+        .then(result => {
+            console.debug("Back From database with results.");
+            res.json(result.rows);
+        })
+        .catch(e =>
+            setImmediate(() => {
+                console.error('Error executing query', e.stack);
+            })
+        )
 });
 
-
-
-
-
-
+/**********************************************************
+ * Test file
+ * TODO: Delete later
+ **********************************************************/
 router.get('/Data', (req, res) => {
     const location = path.join(__dirname, '../Test/info.json');
     fs.readFile(location, 'utf8', (err, data) => {
@@ -63,4 +65,7 @@ router.get('/Data', (req, res) => {
 
 });
 
+/**********************************************************
+ * Export File
+ **********************************************************/
 module.exports = router;

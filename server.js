@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const app = express();
+require('dotenv').config();
 const port = process.env.PORT || 5000;
 
 // set the view engine to ejs

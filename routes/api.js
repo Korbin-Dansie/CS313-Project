@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
 
 router.get('/DataBase', (req, res) => {
 
-    client.query('SELECT * FROM public.rarity;', (err, res) => {
+    client.query('SELECT * FROM public.rarity;', (err, response) => {
         if (err) {
             res.writeHead(404, {
                 "Content-Type": "text/plain"

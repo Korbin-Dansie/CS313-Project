@@ -32,19 +32,9 @@ router.get('/', (req, res) => {
     res.writeHead(200, {
         "Content-Type": "text/plain"
     });
-    res.write("Api File\n");
-    res.write(testLog);
-
+    res.write("Api File");
     res.end();
 });
-
-
-router.get('/DataBase', (req, res) => {
-
-});
-
-
-
 
 router.get('/Data', (req, res) => {
     const location = path.join(__dirname, '../Test/info.json');

@@ -11,7 +11,6 @@ const {
 const pool = new Pool({
     connectionString: connectionString
 });
-console.log("ENV Variable:" + connectionString);
 
 router.get('/', (req, res) => {
     res.writeHead(200, {
@@ -34,7 +33,7 @@ router.get('/r', function (req, res, next) {
 
         // Log this to the console for debugging purposes.
         console.debug("Back from DB with result:");
-        res.json(JSON.stringify(result.rows));
+        res.json(result.rows);
         res.end();
     });
 });

@@ -4,7 +4,7 @@
   "description": "This is for a school Project for BYU-I CS313",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,9 +19,11 @@
   },
   "homepage": "https://github.com/Korbin-Dansie/CS313-Project#readme",
   "dependencies": {
-    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "pg": "^7.14.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nodemon": "^2.0.1",
+    "dotenv": "^8.2.0"
+  }
 }

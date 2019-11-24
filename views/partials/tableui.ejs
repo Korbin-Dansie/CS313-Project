@@ -1,0 +1,49 @@
+<!-- Display the Form UI -->
+<form method="get" action="" id="SearchForm">
+
+    <label for="ProductName">Name</label>
+    <br />
+    <input type="search" name="ProductName">
+    <br />
+    <!-- TODO Latter-->
+    <!--
+    <label for="PriceLow">Price</label>
+    <br /><input id="PriceL" type="text" name="PriceLow" placeholder="Min">
+    <br /><input id="PriceH" type="text" name="PriceHigh" placeholder="Max">
+    <br />
+
+    <label for="Category">Category</label>
+    <br />
+    <select id="CatagoryField" name="Category">
+        <option value="None">None</option>
+    </select>
+    <br />
+
+    <label for="SubCategory">Subcategory</label>
+    <br />
+    <select id="SubCatagoryField" name="SubCategory">
+        <option value="None">None</option>
+    </select>
+    <br />
+
+    <label for="Rarity">Rarity</label>
+    <br />
+    <select class="" name="Rarity">
+        <option value="None">None</option>
+    </select>
+    <br />
+    -->
+    <div class="controlButtons">
+        <input id="ResetButton" type="Reset" name="Reset" value="Clear">
+        <input id="SubmitButton" type="Submit" name="Submit" value="Submit">
+    </div>
+</form>
+<script>
+    document.getElementById("SubmitButton").addEventListener("click", function (event) {
+        event.preventDefault();
+        updateProducts();
+    });
+    document.getElementById("SearchForm").addEventListener("reset", function (event) {
+        updateProducts(true);
+    });
+</script>

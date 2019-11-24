@@ -3,7 +3,9 @@ function loadDoc() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
-        document.getElementById("RarityInfo").innerHTML = this.responseText;
+        if(document.getElementById("RarityInfo") != null){
+          document.getElementById("RarityInfo").innerHTML = this.responseText;
+        }
       }
     };
     xhttp.open("GET", "/api/rarity", true);
@@ -23,8 +25,9 @@ function loadDoc() {
         var table = document.getElementById("ProductTable");
         //Add Table Headers
         var header = table.createTHead();
-        var hrow = header.insertRow(0);    
-        for (const x in resArr[0]) {
+        var hrow = header.insertRow(0);  
+        hrow.setAttribute("Class", "TableHeader");
+                for (const x in resArr[0]) {
           // x + ":" + obj[x]
           var cell = hrow.insertCell(-1);
           cell.innerHTML = x;
@@ -34,7 +37,8 @@ function loadDoc() {
         for (var i = 0; i < resArr.length; i++) {
           var obj = resArr[i];
           var row = table.insertRow(-1); //Create new row and make it the last row
-          
+          row.setAttribute("Class", "TableBody");
+
           //Display Each Item By TAG : Value
           for (const x in obj) {
             // x + ":" + obj[x]

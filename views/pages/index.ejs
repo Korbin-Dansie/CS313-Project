@@ -6,6 +6,8 @@
   <link rel="icon" href="/img/KtechIcon.png" />
   <link rel="stylesheet" href="/css/master.css">
   <script src="/js/myscripts.js"></script>
+  <script src="/js/productUpdate.js"></script>
+
 </head>
 
 <body onload="loadDoc()">
@@ -13,12 +15,15 @@
   <h1>Main Page</h1>
   <h2>Main Table</h2>
   <div id="ProductDiv"></div>
-    <table id="ProductTable"></table>
-  <hr>
+  <%- include('../partials/tableui.ejs') %>
 
+  <table id="ProductTable"></table>
+<!--
   <h2>Rarity</h2>
   <div id="RarityInfo"></div>
   <hr>
+-->
+
 </body>
 
 </html>

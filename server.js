@@ -68,16 +68,5 @@ function readUnkownPage(req, res) {
 
 function readIndexFile(req, res) {
   //console.log("Current path is: "+ path.join(__dirname));
-  fs.readFile(path.join(__dirname, 'views/pages/index.html'), 'utf8', (err, data) => {
-    if (err) {
-      console.error("Error Reading file", err);
-      readUnkownPage(req, res);
-      return;
-    }
-    res.writeHead(200, {
-      "Content-Type": "text/html"
-    });
-    res.write(data);
-    res.end();
-  });
+  res.render('pages/index');
 }

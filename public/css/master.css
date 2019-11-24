@@ -8,8 +8,14 @@ form {
 }
 
 label {
-  float: right;
+  float: left;
+  margin-top: 15px;
 }
+
+label:first-of-type {
+  margin-top: 0px;
+}
+
 
 input,
 select {
@@ -17,16 +23,13 @@ select {
   width: 100%;
 }
 
-table tr td:nth-child(1) {
-  padding-left: 5px;
+.controlButtons {
+  display: flex
 }
 
-table tr td:nth-child(2) {
-  padding-right: 5px;
-}
-
-#controlButtons {
-  text-align: center;
-  padding-top: 5px;
-  padding-bottom: 5px;
+.controlButtons input{
+  width: 50%;
+  margin: 10px;
+  margin-top: 15px;
+  padding: 5px 15px;
 }

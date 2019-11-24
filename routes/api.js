@@ -23,7 +23,13 @@ router.get('/', readAPIHomepage);
  *  Main table
  **********************************************************/
 router.get('/productTable', function (req, res, next) {
-    var sql = "select Products.id AS ProductsID, Category.name AS CategoryName, Sub_Category.name AS Sub_CategoryName, Rarity.name AS RarityName, Products.name AS ProductsName, Products.quantity AS ProductsQuantity, Products.price AS ProductsPrice from products left OUTER JOIN Rarity ON products.rarityid = Rarity.id left OUTER JOIN Sub_Category ON products.sub_categoryid = Sub_Category.id left OUTER JOIN Category ON Sub_Category.categoryid = Category.id ORDER BY ProductsID ASC";
+    const select = "select Products.id AS ProductsID, Category.name AS CategoryName, Sub_Category.name AS Sub_CategoryName, Rarity.name AS RarityName, Products.name AS ProductsName, Products.quantity AS ProductsQuantity, Products.price AS ProductsPrice from products left OUTER JOIN Rarity ON products.rarityid = Rarity.id left OUTER JOIN Sub_Category ON products.sub_categoryid = Sub_Category.id left OUTER JOIN Category ON Sub_Category.categoryid = Category.id";
+    //If undefined use and empty string
+    var whereValue = returnWhere(req.query);
+    const where = (whereValue == undefined ? "" : whereValue);
+    const sort = "ORDER BY ProductsID ASC";
+    const sql = select + " " + where + " " + sort;
+
     pool
         .query(sql)
         .then(result => {
@@ -104,6 +110,29 @@ function readAPIHomepage(req, res) {
     });
 }
 
+/**********************************************************
+ * Return Where
+ * Parse url query data check for valid inputs
+ **********************************************************/
+function returnWhere(data) {
+    var whereClause = [];
+    if (data.ProductName != undefined) {
+        whereClause.push("LOWER(Products.name) LIKE LOWER('%" + data.ProductName + "%')");
+    }
+
+    //For each where clause add "and" between them
+    var returnStr = "";
+    whereClause.forEach(element => {
+        returnStr += element;
+    });
+    console.debug("Return String:", returnStr);
+    if(returnStr != ""){
+        return "WHERE " + returnStr;
+    }
+    else{
+        return "";
+    }
+}
 /**********************************************************
  * Export File
  **********************************************************/

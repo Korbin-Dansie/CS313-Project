@@ -1,8 +1,53 @@
-function updateProducts(reset = false) {
-    var xhr = new XMLHttpRequest();
-    const formLocationID = "SearchForm";
-    const TableLocationID = "ProductTable";
+/************************************************************
+ *  This file Requires HTML elements with IDS
+ ************************************************************/
+const TableLocationID = "ProductTable";
+const formLocationID = "SearchForm";
 
+
+/************************************************************
+ *  Run this code when the Document is done loading
+ *  So that we can add event listeners
+ ************************************************************/
+if (document.addEventListener) { // For all major browsers, except IE 8 and earlier
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById(formLocationID).addEventListener("submit", function (event) {
+            event.preventDefault();
+            updateProducts();
+        });
+        document.getElementById(formLocationID).addEventListener("reset", function (event) {
+            updateProducts(true);
+        });
+    });
+} else if (document.attachEvent) { // For IE 8 and earlier versions
+    document.attachEvent("load", function () {
+        document.getElementById(formLocationID).addEventListener("submit", function (event) {
+            event.preventDefault();
+            updateProducts();
+        });
+        document.getElementById(formLocationID).addEventListener("reset", function (event) {
+            updateProducts(true);
+        });
+    });
+}
+
+/************************************************************
+ *  updateProducts
+ *  If reset = true request the form again without and 
+ *  search parmaters
+ *  
+ *  A function that makes a ajax request to get the main product
+ *  information form then update the TableLocationID with the new 
+ *  info
+ ************************************************************/
+function updateProducts(reset = false) {
+    if (window.XMLHttpRequest) {
+        // code for modern browsers
+        xhr = new XMLHttpRequest();
+    } else {
+        // code for old IE browsers
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             var resArr = JSON.parse(this.responseText);
@@ -34,50 +79,36 @@ function updateProducts(reset = false) {
             } //For var i
         }
     }
-
-    //Add paramaters to string
-    //Get String is prepared
-    //Pass in the current GET Paramaters
-
     var paramaters = "";
-    //Prepare the Get String
-    var getString = "?";
-    var formLocation = document.getElementById(formLocationID);
-    var formElements = formLocation.getElementsByTagName("INPUT");
+    if (reset == false) {
+        //Add paramaters to string
+        //Get String is prepared
+        //Pass in the current GET Paramaters
+        var paramaters = "";
+        //Prepare the Get String
+        var getString = "?";
+        var formLocation = document.getElementById(formLocationID);
 
-    for (var i = 0, element; element = formElements[i++];) {
-        if (element.value != "" &&
-            (!(element.getAttribute("name") == "Submit" || element.getAttribute("name") == "Reset"))) {
-            getString += element.getAttribute("name") + "=" + element.value + "&";
+        //For input elements
+        var formElements = formLocation.getElementsByTagName("INPUT");
+        for (var i = 0, element; element = formElements[i++];) {
+            if (element.value != "" &&
+                (!(element.getAttribute("name") == "Submit" || element.getAttribute("name") == "Reset"))) {
+                getString += element.getAttribute("name") + "=" + element.value + "&";
+            }
         }
-    }
-    var selectElements = formLocation.getElementsByTagName("SELECT");
-    for (var i = 0, element; element = selectElements[i++];) {
-        if (element.value != "" && element.value != "None") {
-            getString += element.getAttribute("name") + "=" + element.value + "&";
+        //For select elements
+        var selectElements = formLocation.getElementsByTagName("SELECT");
+        for (var i = 0, element; element = selectElements[i++];) {
+            if (element.value != "" && element.value != "None") {
+                getString += element.getAttribute("name") + "=" + element.value + "&";
+            }
         }
-    }
-    //Trim last charactar of the string to prevent errors
-    getString = getString.substring(0, getString.length - 1);
-    
-    //TODO Get this working
-    if(reset == true){
-        paramaters = "";
-    }
-    else{
+        //Trim last charactar of the string to prevent errors
+        getString = getString.substring(0, getString.length - 1);
         paramaters = getString;
     }
-    /*
-    if (getString.length > 0) {
-        //Add paramaters to url with page refreash
-        window.history.replaceState(null, null, getString);
 
-        if (location.search != null) {
-            paramaters = location.search.toString();
-        }
-    }*/
-
-    console.info("paramaters:" + paramaters);
     xhr.open("GET", "/api/productTable" + paramaters, true);
     xhr.send();
 }

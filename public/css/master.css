@@ -5,17 +5,18 @@
 form {
   border: 2px solid silver;
   display: inline-block;
+  padding: 5px;
 }
 
-label {
-  float: left;
+label, #PriceLabel {
+  text-align: left;
   margin-top: 15px;
+  display: block;
 }
 
 label:first-of-type {
   margin-top: 0px;
 }
-
 
 input,
 select {
@@ -24,7 +25,7 @@ select {
 }
 
 .controlButtons {
-  display: flex
+  display: flex;
 }
 
 .controlButtons input{
@@ -33,3 +34,28 @@ select {
   margin-top: 15px;
   padding: 5px 15px;
 }
+
+
+
+#PriceDiv{
+  display: flex;
+  box-sizing: border-box;
+}
+
+#PriceDiv input{
+  margin: 0px 10px;
+}
+
+#PriceDiv input:first-child{
+  margin-left: 0px;
+}
+
+#PriceDiv input:last-child{
+  margin-right: 0px;
+}
+
+#PriceDiv span{
+  text-align: center;
+}
+
+

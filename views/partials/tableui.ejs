@@ -1,23 +1,44 @@
 <!-- Display the Form UI -->
 <form method="get" action="" id="SearchForm">
 
-    <label for="ProductName">Name</label>
-    <br />
-    <input type="search" name="ProductName">
-    <br />
-    <!-- TODO Latter-->
-    <!--
-    <label for="PriceLow">Price</label>
-    <br /><input id="PriceL" type="text" name="PriceLow" placeholder="Min">
-    <br /><input id="PriceH" type="text" name="PriceHigh" placeholder="Max">
-    <br />
+    <label for="ProductName">Name<br></label>
+    <input type="search" id="ProductName" name="ProductName">
 
-    <label for="Category">Category</label>
-    <br />
+    <label for="PriceL">Price</label>
+    <div style="clear: both;"></div>
+    <div id="PriceDiv">
+        <input id="PriceL" type="text" name="PriceLow" placeholder="Min">
+        <span>to</span>
+        <input id="PriceH" type="text" name="PriceHigh" placeholder="Max">
+    </div>
+
+    <label for="CatagoryField">Category</label>
     <select id="CatagoryField" name="Category">
         <option value="None">None</option>
     </select>
+
+    <!--Order BY-->
+    <label for="SortBy">Order By</label>
+    <select name="SortBy" id="SortBy">
+        <option value="None" selected>None</option>
+        <option value="ProductName">Name</option>
+        <option value="Price">Price</option>
+        <option value="Rarity">Rarity</option>
+        <option value="Category">Category</option>
+        <option value="SubCategory">SubCategory</option>
+        <option value="quantity" hidden>quantity</option>
+        <option value="ID" hidden>ID</option>
+    </select>
+
+    <select name="OrderBy">
+        <option value="ASC" selected>Ascending</option>
+        <option value="DESC">Descending</option>
+    </select>
     <br />
+
+    <!-- TODO Latter-->
+    <!--
+
 
     <label for="SubCategory">Subcategory</label>
     <br />
@@ -38,12 +59,3 @@
         <input id="SubmitButton" type="Submit" name="Submit" value="Submit">
     </div>
 </form>
-<script>
-    document.getElementById("SubmitButton").addEventListener("click", function (event) {
-        event.preventDefault();
-        updateProducts();
-    });
-    document.getElementById("SearchForm").addEventListener("reset", function (event) {
-        updateProducts(true);
-    });
-</script>

@@ -63,7 +63,7 @@ router.get('/rarity', function (req, res, next) {
 });
 
 /**********************************************************
- * Categroy
+ * Category
  **********************************************************/
 router.get('/Category', (req, res) => {
     var sql = "SELECT * FROM public.category";
@@ -145,6 +145,10 @@ function returnWhere(data) {
         if (!(isNaN(data.PriceLow) || isNaN(data.PriceHigh))) {
             whereClause.push("Products.price BETWEEN " + data.PriceLow + ' and ' + data.PriceHigh);
         }
+    }
+
+    if (data.Category != undefined) {
+        whereClause.push("LOWER(Category.name) LIKE LOWER('%" + data.Category + "%')");      
     }
 
     console.debug(TAG, data);

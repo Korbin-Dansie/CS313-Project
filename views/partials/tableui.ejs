@@ -1,9 +1,11 @@
 <!-- Display the Form UI -->
 <form method="get" action="" id="SearchForm">
 
+    <!--Name-->
     <label for="ProductName">Name<br></label>
     <input type="search" id="ProductName" name="ProductName">
 
+    <!--Price-->
     <label for="PriceL">Price</label>
     <div style="clear: both;"></div>
     <div id="PriceDiv">
@@ -12,8 +14,15 @@
         <input id="PriceH" type="text" name="PriceHigh" placeholder="Max">
     </div>
 
+    <!--CatagoryField-->
     <label for="CatagoryField">Category</label>
     <select id="CatagoryField" name="Category">
+        <option value="None">None</option>
+    </select>
+
+    <!--SubCategory-->
+    <label fro="SubCategory">Subcategory</label>
+    <select id="SubCatagoryField" name="SubCategory">
         <option value="None">None</option>
     </select>
 
@@ -38,15 +47,6 @@
 
     <!-- TODO Latter-->
     <!--
-
-
-    <label for="SubCategory">Subcategory</label>
-    <br />
-    <select id="SubCatagoryField" name="SubCategory">
-        <option value="None">None</option>
-    </select>
-    <br />
-
     <label for="Rarity">Rarity</label>
     <br />
     <select class="" name="Rarity">

@@ -2,7 +2,9 @@
  *  This file Requires HTML elements with IDS
  ************************************************************/
 const TableLocationID = "ProductTable";
-const formLocationID = "SearchForm";
+const FormLocationID = "SearchForm";
+const CatagoryFieldID = "CatagoryField"
+const SubCatagoryFieldID = "SubCatagoryField"
 
 
 /************************************************************
@@ -11,24 +13,38 @@ const formLocationID = "SearchForm";
  ************************************************************/
 if (document.addEventListener) { // For all major browsers, except IE 8 and earlier
     document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById(formLocationID).addEventListener("submit", function (event) {
+        document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();
             updateProducts();
         });
-        document.getElementById(formLocationID).addEventListener("reset", function (event) {
+        document.getElementById(FormLocationID).addEventListener("reset", function (event) {
             updateProducts(true);
         });
+
+        addCategoryOptions();
+
+        document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
+            addSubCategoryOptions();
+        });
     });
+
 } else if (document.attachEvent) { // For IE 8 and earlier versions
     document.attachEvent("load", function () {
-        document.getElementById(formLocationID).addEventListener("submit", function (event) {
+        document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();
             updateProducts();
         });
-        document.getElementById(formLocationID).addEventListener("reset", function (event) {
+        document.getElementById(FormLocationID).addEventListener("reset", function (event) {
             updateProducts(true);
         });
+
+        addCategoryOptions();
+
+        document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
+            addSubCategoryOptions();
+        });
     });
+
 }
 
 /************************************************************
@@ -87,7 +103,7 @@ function updateProducts(reset = false) {
         var paramaters = "";
         //Prepare the Get String
         var getString = "?";
-        var formLocation = document.getElementById(formLocationID);
+        var formLocation = document.getElementById(FormLocationID);
 
         //For input elements
         var formElements = formLocation.getElementsByTagName("INPUT");
@@ -111,4 +127,44 @@ function updateProducts(reset = false) {
 
     xhr.open("GET", "/api/productTable" + paramaters, true);
     xhr.send();
+}
+
+/************************************************************
+ *  Add category options to the Select tag
+ ************************************************************/
+function addCategoryOptions() {
+    var x = document.getElementById(CatagoryFieldID);
+
+    //Create ajax request to get the categorys
+    if (window.XMLHttpRequest) {
+        // code for modern browsers
+        xhr = new XMLHttpRequest();
+    } else {
+        // code for old IE browsers
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var resArr = JSON.parse(this.responseText);
+            resArr.forEach(element => {
+                var option = document.createElement("option");
+                option.text = element.name;
+                option.setAttribute("Value", element.name);
+                x.add(option);    
+            });
+        }
+    }
+    xhr.open("GET", "/api/Category", true);
+    xhr.send();
+}
+
+/************************************************************
+ *  Add subcategory options to the Select tag
+ ************************************************************/
+function addSubCategoryOptions(){
+    var x = document.getElementById(SubCatagoryFieldID);
+    var option = document.createElement("option");
+    option.text = "kiwi";
+    option.setAttribute("Value", "element.name");
+    x.add(option);    
 }

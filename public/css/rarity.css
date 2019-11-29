@@ -1,0 +1,20 @@
+:root {
+    --Common-Color: #737373;
+    --Uncommon-Color: #00ccff;
+    --Rare-Color: #ffa600;
+    --Legendary-Color: #cc00ff;
+  }
+  
+  .Common {
+    color : var(--Common-Color);
+  }
+  .Uncommon {
+    color : var(--Uncommon-Color);
+  }
+  .Rare {
+    color : var(--Rare-Color);
+  }
+  .Legendary{
+    color : var(--Legendary-Color);
+  }
+  

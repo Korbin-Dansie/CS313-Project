@@ -44,7 +44,126 @@ if (document.addEventListener) { // For all major browsers, except IE 8 and earl
             addSubCategoryOptions();
         });
     });
+}
 
+function addRowData(row, data) {
+    row.setAttribute("Class", "TableBody");
+
+    //Display all the data
+    if (data.categoryname != undefined) {
+        var cell = row.insertCell(-1);
+        cell.innerHTML = data.categoryname;
+    }
+    if (data.sub_categoryname != undefined) {
+        var cell = row.insertCell(-1);
+        cell.innerHTML = data.sub_categoryname;
+    }
+    if (data.rarityname != undefined && data.productsname != undefined) {
+        var cell = row.insertCell(-1);
+        cell.setAttribute("class", data.rarityname);
+        cell.innerHTML = data.productsname;
+    }
+    if (data.productsquantity != undefined) {
+        var cell = row.insertCell(-1);
+        cell.innerHTML = data.productsquantity;
+    }
+    if (data.productsprice != undefined) {
+        var cell = row.insertCell(-1);
+        cell.innerHTML = data.productsprice;
+    }
+}
+/************************************************************
+ *  Display Producut table data
+ ************************************************************/
+function displayTableData(tableID, data) {
+
+    //Delete all table rows that contain td
+    var table = document.getElementById(tableID);
+    var tableBodyLength = document.getElementById(tableID).getElementsByClassName("TableBody").length;
+    console.info('Table length:' + (tableBodyLength - 1));
+
+    while (tableBodyLength > 0) {
+        //console.info('Table Element:' + table.getElementsByClassName("TableBody")[tableBodyLength - 1]);
+        //console.info('Table Element Num:' + tableBodyLength);
+        table.getElementsByClassName("TableBody")[tableBodyLength - 1].remove();
+        tableBodyLength = document.getElementById(tableID).getElementsByClassName("TableBody").length;
+    }
+
+    /***
+     *  Insert latter would be nice to add but 
+     *  might confuse people reviewing code
+     */
+    for (var i = 0; i < data.length; i++) {
+        var obj = data[i];
+        //If the quanity is zero add it to the end else add it second to last
+        var row = table.insertRow(-1); //Create new row and make it the last row
+        addRowData(row, obj);
+
+    } //For var i
+
+    /***
+     *  Insert latter would be nice to add but 
+     *  might confuse people reviewing code
+     */
+    /*
+    var insertLater = new Array();
+    for (var i = 0; i < data.length; i++) {
+        var obj = data[i];
+        //If the quanity is zero add it to the end else add it second to last
+        if(obj.productsquantity > 0){
+            var row = table.insertRow(-1); //Create new row and make it the last row
+            addRowData(row, obj);
+        }
+        else{
+            insertLater.push(obj);
+            continue;
+        }
+    } //For var i
+    insertLater.forEach(obj =>{
+        var row = table.insertRow(-1); //Create new row and make it the last row
+        addRowData(row, obj)
+    });
+    */
+}
+/************************************************************
+ *  Run this function on load
+ ************************************************************/
+function loadDoc() {
+    //Return array of values
+    // "productsid":10        ,"categoryname":"Sword" ,"sub_categoryname":"Short_Sword",
+    // "rarityname":"Common"  ,"productsname":"Sting",
+    // "productsquantity":1000,"productsprice":25
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var resArr = JSON.parse(this.responseText);
+            var table = document.getElementById(TableLocationID);
+
+            //Add Table Headers
+            var header = table.createTHead();
+            var hrow = header.insertRow(0);
+            hrow.setAttribute("Class", "TableHeader");
+
+            //Add each cell
+            var HeaderText = new Array();
+            HeaderText.push("Category");
+            HeaderText.push("Subcategory");
+            HeaderText.push("Name");
+            HeaderText.push("Quantity");
+            HeaderText.push("Price");
+
+            HeaderText.forEach(element => {
+                var cell = hrow.insertCell(-1);
+                cell.innerHTML = element;
+
+            });
+
+            displayTableData(TableLocationID, resArr);
+        }
+    }
+    xhttp.open("GET", "/api/productTable", true);
+    xhttp.send();
 }
 
 /************************************************************
@@ -68,31 +187,8 @@ function updateProducts(reset = false) {
         if (xhr.readyState == 4 && xhr.status == 200) {
             var resArr = JSON.parse(this.responseText);
             var table = document.getElementById(TableLocationID);
-            //Delete all table rows that contain td
-            var tableBodyLength = table.getElementsByClassName("TableBody").length;
-            console.info('Table length:' + (tableBodyLength - 1));
 
-            for (var i = tableBodyLength; i > 0; i = tableBodyLength) {
-                //console.info('Table Element:' + table.getElementsByClassName("TableBody")[tableBodyLength - 1]);
-                //console.info('Table Element Num:' + tableBodyLength);
-                table.getElementsByClassName("TableBody")[tableBodyLength - 1].remove();
-                tableBodyLength = table.getElementsByClassName("TableBody").length;
-            }
-
-            //Add table rows for each item
-            for (var i = 0; i < resArr.length; i++) {
-                var obj = resArr[i];
-                var row = table.insertRow(-1); //Create new row and make it the last row
-                row.setAttribute("Class", "TableBody");
-
-                //Display Each Item By TAG : Value
-                for (const x in obj) {
-                    // x + ":" + obj[x]
-                    var cell = row.insertCell(-1);
-                    cell.innerHTML = obj[x];
-                } //for const x
-
-            } //For var i
+            displayTableData(TableLocationID, resArr);
         }
     }
     var paramaters = "";
@@ -124,6 +220,10 @@ function updateProducts(reset = false) {
         getString = getString.substring(0, getString.length - 1);
         paramaters = getString;
     }
+    //Else if we are resting the form
+    else {
+        addSubCategoryOptions(true);
+    }
 
     xhr.open("GET", "/api/productTable" + paramaters, true);
     xhr.send();
@@ -150,7 +250,7 @@ function addCategoryOptions() {
                 var option = document.createElement("option");
                 option.text = element.name;
                 option.setAttribute("Value", element.name);
-                x.add(option);    
+                x.add(option);
             });
         }
     }
@@ -161,10 +261,40 @@ function addCategoryOptions() {
 /************************************************************
  *  Add subcategory options to the Select tag
  ************************************************************/
-function addSubCategoryOptions(){
+function addSubCategoryOptions(reset = false) {
     var x = document.getElementById(SubCatagoryFieldID);
-    var option = document.createElement("option");
-    option.text = "kiwi";
-    option.setAttribute("Value", "element.name");
-    x.add(option);    
+
+    //Remove Existing subCategory options
+    var list = x.getElementsByTagName("option")
+    while (list.length > 1) {
+        list[list.length - 1].remove();
+    }
+
+    if (reset == false) {
+        //Query data base for sub categroy options
+        if (window.XMLHttpRequest) {
+            // code for modern browsers
+            xhr = new XMLHttpRequest();
+        } else {
+            // code for old IE browsers
+            xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var resArr = JSON.parse(this.responseText);
+                let categoryName = document.getElementById(CatagoryFieldID);
+                resArr.forEach(element => {
+                    if (categoryName.value == element.categoryname) {
+                        var option = document.createElement("option");
+                        option.text = element.sub_categoryname;
+                        option.setAttribute("Value", element.sub_categoryname);
+                        x.add(option);
+                    }
+                });
+            }
+        }
+        xhr.open("GET", "/api/SubcategoryByName", true);
+        xhr.send();
+
+    }
 }

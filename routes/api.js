@@ -34,7 +34,7 @@ router.get('/productTable', function (req, res, next) {
     pool
         .query(sql)
         .then(result => {
-            console.debug(TAG,  "productTable" + ": Back From database with results.");
+            console.debug(TAG, "productTable" + ": Back From database with results.");
             res.json(result.rows);
         })
         .catch(e =>
@@ -78,8 +78,45 @@ router.get('/Category', (req, res) => {
                 console.error('Error executing query', e.stack);
             })
         )
-    });
+});
 
+/**********************************************************
+ * Subcategory by ID
+ **********************************************************/
+router.get('/SubcategoryByID', (req, res) => {
+    var sql = "SELECT * FROM public.sub_category";
+    pool
+        .query(sql)
+        .then(result => {
+            console.debug(TAG, "Subcategory" + ": Back From database with results.");
+            res.json(result.rows);
+        })
+        .catch(e =>
+            setImmediate(() => {
+                console.error('Error executing query', e.stack);
+            })
+        )
+});
+
+/**********************************************************
+ * Subcategory by Name
+ * Return Array of
+ * {"id":1,"sub_categoryname":"Short_Sword","categoryname":"Sword"}
+ **********************************************************/
+router.get('/SubcategoryByName', (req, res) => {
+    var sql = "SELECT sub_category.id, sub_category.name AS Sub_CategoryName , category.name AS CategoryName FROM public.sub_category left JOIN category ON sub_category.categoryid = category.id";
+    pool
+        .query(sql)
+        .then(result => {
+            console.debug(TAG, "Subcategory" + ": Back From database with results.");
+            res.json(result.rows);
+        })
+        .catch(e =>
+            setImmediate(() => {
+                console.error('Error executing query', e.stack);
+            })
+        )
+});
 /**********************************************************
  * Test file
  * TODO: Delete later
@@ -148,9 +185,32 @@ function returnWhere(data) {
     }
 
     if (data.Category != undefined) {
-        whereClause.push("LOWER(Category.name) LIKE LOWER('%" + data.Category + "%')");      
+        whereClause.push("LOWER(Category.name) LIKE LOWER('%" + data.Category + "%')");
     }
 
+    if (data.SubCategory != undefined) {
+        whereClause.push("LOWER(sub_category.name) LIKE LOWER('%" + data.SubCategory + "%')");
+    }
+
+    if (data.Rarity != undefined) {
+        switch (data.Rarity) {
+            case "Common":
+                whereClause.push("LOWER(Rarity.name) LIKE LOWER('" + data.Rarity + "')");
+                break;
+            case "Uncommon":
+                whereClause.push("LOWER(Rarity.name) LIKE LOWER('" + data.Rarity + "')");
+                break;
+            case "Rare":
+                whereClause.push("LOWER(Rarity.name) LIKE LOWER('" + data.Rarity + "')");
+                break;
+            case "Legendary":
+                whereClause.push("LOWER(Rarity.name) LIKE LOWER('" + data.Rarity + "')");
+                break;
+            default:
+                // code block
+                break;
+        }
+    }
     console.debug(TAG, data);
 
     //For each where clause add "and" between them
@@ -209,7 +269,7 @@ function returnSort(data) {
             returnStr += "sub_categoryname";
             break;
         case "Rarity":
-            returnStr += "rarityname";
+            returnStr += "rarityid";
             break;
         case "ID":
             returnStr += "productsid";

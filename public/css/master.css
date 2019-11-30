@@ -3,10 +3,9 @@
 }
 
 form {
-  border: 2px solid silver;
   display: inline-block;
   padding: 5px;
-  width: 136px;
+  width: 140px;
 }
 
 label, #PriceLabel {
@@ -48,7 +47,6 @@ select {
   margin-left: 2px;
 
 }
-
 
 #PriceDiv{
   display: flex;

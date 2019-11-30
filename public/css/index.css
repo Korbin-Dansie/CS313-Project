@@ -214,4 +214,22 @@
     height: 100px;
     width: 100px;
   }
-  
+
+  table{
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  table tr th{
+    background-color: #4CAF50;
+    color: white;  
+  }
+  table  td{
+    vertical-align: middle;
+    border-bottom: 1px solid #ddd;
+  }
+  table .TableBody:nth-child(odd){
+  }
+
+  table .TableBody:nth-child(even) {
+  }

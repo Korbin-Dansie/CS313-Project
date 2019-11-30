@@ -40,15 +40,10 @@ function displayTableData(tableID, data) {
 
     //Delete all table rows that contain td
     var table = document.getElementById(tableID);
-    var tableBodyLength = document.getElementById(tableID).getElementsByClassName("TableBody").length;
-    console.info('Table length:' + (tableBodyLength - 1));
+    //Clear body
 
-    while (tableBodyLength > 0) {
-        //console.info('Table Element:' + table.getElementsByClassName("TableBody")[tableBodyLength - 1]);
-        //console.info('Table Element Num:' + tableBodyLength);
-        table.getElementsByClassName("TableBody")[tableBodyLength - 1].remove();
-        tableBodyLength = document.getElementById(tableID).getElementsByClassName("TableBody").length;
-    }
+    var body = table.getElementsByTagName("tbody")[0];
+    body.innerHTML = "";
 
     /***
      *  Insert latter would be nice to add but 
@@ -57,7 +52,7 @@ function displayTableData(tableID, data) {
     for (var i = 0; i < data.length; i++) {
         var obj = data[i];
         //If the quanity is zero add it to the end else add it second to last
-        var row = table.insertRow(-1); //Create new row and make it the last row
+        var row = body.insertRow(-1); //Create new row and make it the last row
         addRowData(row, obj);
 
     } //For var i
@@ -117,6 +112,9 @@ function loadDoc() {
         var cell = hrow.insertCell(-1);
         cell.innerHTML = element;
     });
+
+    table.createTBody();
+
 
     // Add parameters in string to search form
     let form = document.getElementById(FormLocationID);

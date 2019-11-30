@@ -6,6 +6,7 @@ form {
   border: 2px solid silver;
   display: inline-block;
   padding: 5px;
+  width: 136px;
 }
 
 label, #PriceLabel {
@@ -26,15 +27,27 @@ select {
 
 .controlButtons {
   display: flex;
+  margin: 0px;
+  padding: 0px;
 }
 
 .controlButtons input{
   width: 50%;
-  margin: 10px;
   margin-top: 15px;
-  padding: 5px 15px;
+  padding: 5px 13px;
 }
 
+.controlButtons input:first-child{
+  margin-left: 0px;
+  margin-right: 2px;
+
+}
+
+.controlButtons input:last-child{
+  margin-right: 0px;
+  margin-left: 2px;
+
+}
 
 
 #PriceDiv{

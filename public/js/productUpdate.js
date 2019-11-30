@@ -6,46 +6,6 @@ const FormLocationID = "SearchForm";
 const CatagoryFieldID = "CatagoryField"
 const SubCatagoryFieldID = "SubCatagoryField"
 
-
-/************************************************************
- *  Run this code when the Document is done loading
- *  So that we can add event listeners
- ************************************************************/
-if (document.addEventListener) { // For all major browsers, except IE 8 and earlier
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById(FormLocationID).addEventListener("submit", function (event) {
-            event.preventDefault();
-            updateProducts();
-        });
-        document.getElementById(FormLocationID).addEventListener("reset", function (event) {
-            updateProducts(true);
-        });
-
-        addCategoryOptions();
-
-        document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
-            addSubCategoryOptions();
-        });
-    });
-
-} else if (document.attachEvent) { // For IE 8 and earlier versions
-    document.attachEvent("load", function () {
-        document.getElementById(FormLocationID).addEventListener("submit", function (event) {
-            event.preventDefault();
-            updateProducts();
-        });
-        document.getElementById(FormLocationID).addEventListener("reset", function (event) {
-            updateProducts(true);
-        });
-
-        addCategoryOptions();
-
-        document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
-            addSubCategoryOptions();
-        });
-    });
-}
-
 function addRowData(row, data) {
     row.setAttribute("Class", "TableBody");
 
@@ -72,6 +32,7 @@ function addRowData(row, data) {
         cell.innerHTML = data.productsprice;
     }
 }
+
 /************************************************************
  *  Display Producut table data
  ************************************************************/
@@ -156,7 +117,6 @@ function loadDoc() {
             HeaderText.forEach(element => {
                 var cell = hrow.insertCell(-1);
                 cell.innerHTML = element;
-
             });
 
             displayTableData(TableLocationID, resArr);
@@ -218,7 +178,9 @@ function updateProducts(reset = false) {
         }
         //Trim last charactar of the string to prevent errors
         getString = getString.substring(0, getString.length - 1);
+        
         paramaters = getString;
+
     }
     //Else if we are resting the form
     else {
@@ -297,4 +259,48 @@ function addSubCategoryOptions(reset = false) {
         xhr.send();
 
     }
+}
+
+
+/************************************************************
+ *  Run this code when the Document is done loading
+ *  So that we can add event listeners
+ ************************************************************/
+if (document.addEventListener) { // For all major browsers, except IE 8 and earlier
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById(FormLocationID).addEventListener("submit", function (event) {
+            event.preventDefault();
+            updateProducts();
+        });
+        document.getElementById(FormLocationID).addEventListener("reset", function (event) {
+            updateProducts(true);
+        });
+
+        loadDoc();
+
+        addCategoryOptions();
+
+        document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
+            addSubCategoryOptions();
+        });
+    });
+
+} else if (document.attachEvent) { // For IE 8 and earlier versions
+    document.attachEvent("load", function () {
+        document.getElementById(FormLocationID).addEventListener("submit", function (event) {
+            event.preventDefault();
+            updateProducts();
+        });
+        document.getElementById(FormLocationID).addEventListener("reset", function (event) {
+            updateProducts(true);
+        });
+
+        loadDoc();
+
+        addCategoryOptions();
+
+        document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
+            addSubCategoryOptions();
+        });
+    });
 }

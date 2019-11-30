@@ -1,30 +1,44 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-  <title>Korbin Dansie | Postal Rate Calculator</title>
+  <meta charset="UTF-8" />
+  <title>Test Page</title>
   <link rel="icon" href="/img/KtechIcon.png" />
   <link rel="stylesheet" href="/css/master.css">
   <link rel="stylesheet" href="/css/rarity.css">
+  <link rel="stylesheet" href="/css/index.css">
+
   <script src="/js/myscripts.js"></script>
   <script src="/js/productUpdate.js"></script>
+<body>
+  <div id="body">
+    <%- include('../partials/topNav.ejs') %>
 
-</head>
 
-<body onload="loadDoc()">
+    <div class="sideAdd">
+      <%- include('../partials/tableui.ejs') %>
+    </div>
 
-  <h1>Main Page</h1>
-  <h2>Main Table</h2>
-  <div id="ProductDiv"></div>
-  <%- include('../partials/tableui.ejs') %>
 
-  <table id="ProductTable"></table>
-<!--
-  <h2>Rarity</h2>
-  <div id="RarityInfo"></div>
-  <hr>
--->
+    <div class="mainContect">
+      <h1>Home page</h1>
+      <div id="ProductDiv"></div>
 
-</body>
+      <table id="ProductTable"></table>
+    </div><!--End of Main mainContect-->
 
-</html>
+    <footer>
+      <h2>This is a made up page</h2>
+      <p>We do not sell weapons and everything else on this site
+        is made up informaiton.</p>
+        <p>Also since this is made for school many of the links are broken.</p>
+        Copyright 2019. All Rights Reserved
+        <p id="finePrint"><small>We make <strong>no promise</strong> what so ever. Everything up above is made up.
+          If you order a weapon from up it may <strong>never even show up.</strong></small></p>
+
+        </footer>
+
+      </div><!--End of body-->
+
+    </body>
+    </html>

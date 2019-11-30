@@ -95,35 +95,42 @@ function loadDoc() {
     // "rarityname":"Common"  ,"productsname":"Sting",
     // "productsquantity":1000,"productsprice":25
 
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            var resArr = JSON.parse(this.responseText);
-            var table = document.getElementById(TableLocationID);
+    //Need to be synchronous in order to set the values
+    addCategoryOptions(false);
 
-            //Add Table Headers
-            var header = table.createTHead();
-            var hrow = header.insertRow(0);
-            hrow.setAttribute("Class", "TableHeader");
+    var table = document.getElementById(TableLocationID);
 
-            //Add each cell
-            var HeaderText = new Array();
-            HeaderText.push("Category");
-            HeaderText.push("Subcategory");
-            HeaderText.push("Name");
-            HeaderText.push("Quantity");
-            HeaderText.push("Price");
+    //Add Table Headers
+    var header = table.createTHead();
+    var hrow = header.insertRow(0);
+    hrow.setAttribute("Class", "TableHeader");
 
-            HeaderText.forEach(element => {
-                var cell = hrow.insertCell(-1);
-                cell.innerHTML = element;
-            });
+    //Add each cell
+    var HeaderText = new Array();
+    HeaderText.push("Category");
+    HeaderText.push("Subcategory");
+    HeaderText.push("Name");
+    HeaderText.push("Quantity");
+    HeaderText.push("Price");
 
-            displayTableData(TableLocationID, resArr);
+    HeaderText.forEach(element => {
+        var cell = hrow.insertCell(-1);
+        cell.innerHTML = element;
+    });
+
+    // Add parameters in string to search form
+    let form = document.getElementById(FormLocationID);
+    let queryString = location.search;
+    let params = new URLSearchParams(queryString);
+
+    for (const [key, value] of params.entries()) {
+        let query = form.querySelectorAll(`[name=${key}]`);
+        if (query.length == 1) {
+            query[0].value = value;
         }
     }
-    xhttp.open("GET", "/api/productTable", true);
-    xhttp.send();
+
+    updateProducts();
 }
 
 /************************************************************
@@ -178,7 +185,8 @@ function updateProducts(reset = false) {
         }
         //Trim last charactar of the string to prevent errors
         getString = getString.substring(0, getString.length - 1);
-        
+        window.history.replaceState(null, null, getString);
+
         paramaters = getString;
 
     }
@@ -194,16 +202,16 @@ function updateProducts(reset = false) {
 /************************************************************
  *  Add category options to the Select tag
  ************************************************************/
-function addCategoryOptions() {
+function addCategoryOptions(async = true) {
     var x = document.getElementById(CatagoryFieldID);
 
     //Create ajax request to get the categorys
     if (window.XMLHttpRequest) {
         // code for modern browsers
-        xhr = new XMLHttpRequest();
+        var xhr = new XMLHttpRequest();
     } else {
         // code for old IE browsers
-        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+        var xhr = new ActiveXObject("Microsoft.XMLHTTP");
     }
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
@@ -216,7 +224,7 @@ function addCategoryOptions() {
             });
         }
     }
-    xhr.open("GET", "/api/Category", true);
+    xhr.open("GET", "/api/Category", async);
     xhr.send();
 }
 
@@ -257,7 +265,6 @@ function addSubCategoryOptions(reset = false) {
         }
         xhr.open("GET", "/api/SubcategoryByName", true);
         xhr.send();
-
     }
 }
 
@@ -268,6 +275,9 @@ function addSubCategoryOptions(reset = false) {
  ************************************************************/
 if (document.addEventListener) { // For all major browsers, except IE 8 and earlier
     document.addEventListener("DOMContentLoaded", function () {
+
+        loadDoc();
+
         document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();
             updateProducts();
@@ -275,10 +285,6 @@ if (document.addEventListener) { // For all major browsers, except IE 8 and earl
         document.getElementById(FormLocationID).addEventListener("reset", function (event) {
             updateProducts(true);
         });
-
-        loadDoc();
-
-        addCategoryOptions();
 
         document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
             addSubCategoryOptions();
@@ -287,6 +293,8 @@ if (document.addEventListener) { // For all major browsers, except IE 8 and earl
 
 } else if (document.attachEvent) { // For IE 8 and earlier versions
     document.attachEvent("load", function () {
+        loadDoc();
+
         document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();
             updateProducts();
@@ -294,10 +302,6 @@ if (document.addEventListener) { // For all major browsers, except IE 8 and earl
         document.getElementById(FormLocationID).addEventListener("reset", function (event) {
             updateProducts(true);
         });
-
-        loadDoc();
-
-        addCategoryOptions();
 
         document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
             addSubCategoryOptions();

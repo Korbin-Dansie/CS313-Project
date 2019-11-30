@@ -4,7 +4,9 @@
   "description": "This is for a school Project for BYU-I CS313",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "push": "git push origin master && git push heroku master"
+
   },
   "repository": {
     "type": "git",

@@ -4,9 +4,7 @@
   "description": "This is for a school Project for BYU-I CS313",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "push": "git push origin master && git push heroku master"
-
+    "start": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -20,10 +18,13 @@
   },
   "homepage": "https://github.com/Korbin-Dansie/CS313-Project#readme",
   "dependencies": {
+    "bcrypt": "^3.0.7",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
     "ejs": "^2.7.4",
     "express": "^4.17.1",
-    "pg": "^7.14.0",
-    "dotenv": "^8.2.0"
+    "express-session": "^1.17.0",
+    "pg": "^7.14.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.1"

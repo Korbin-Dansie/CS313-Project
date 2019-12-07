@@ -5,6 +5,11 @@ const path = require('path');
 const fs = require('fs');
 const app = express();
 require('dotenv').config();
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+
 const port = process.env.PORT || 5000;
 
 // set the view engine to ejs
@@ -22,11 +27,18 @@ app.use('/test', express.static(path.join(__dirname, 'Test')))
  **********************************************************/
 app.get('/', readIndexFile);
 
+
 /**********************************************************
  * Route for api
  **********************************************************/
 const api = require('./routes/api');
 app.use('/api/', api);
+
+/**********************************************************
+ * Route for login
+ **********************************************************/
+const login = require('./routes/login');
+app.use('/login/', login);
 
 /**********************************************************
  * For Unkown pages

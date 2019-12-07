@@ -1,9 +1,10 @@
 const express = require('express');
-const app = express();
 const router = express.Router();
+const TAG = "api.js:";
+
 const fs = require('fs');
 const path = require('path');
-const TAG = "api.js:";
+
 const connectionString = process.env.DATABASE_URL + "?ssl=true";
 const {
     Pool

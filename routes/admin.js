@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const TAG = "login.js:";
+const TAG = "admin.js:";
 
 const fs = require('fs');
 const path = require('path');
@@ -21,7 +21,7 @@ const pool = new Pool({
  * Home Page
  **********************************************************/
 router.get('/', (req, res) => {
-    res.redirect("login/sign-in");
+    res.write("Hello");
     res.end();
     return;
 });

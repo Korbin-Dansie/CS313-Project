@@ -45,10 +45,6 @@ function displayTableData(tableID, data) {
     var body = table.getElementsByTagName("tbody")[0];
     body.innerHTML = "";
 
-    /***
-     *  Insert latter would be nice to add but 
-     *  might confuse people reviewing code
-     */
     for (var i = 0; i < data.length; i++) {
         var obj = data[i];
         //If the quanity is zero add it to the end else add it second to last
@@ -60,6 +56,7 @@ function displayTableData(tableID, data) {
     /***
      *  Insert latter would be nice to add but 
      *  might confuse people reviewing code
+     *  Would have to delete the for loop above
      */
     /*
     var insertLater = new Array();
@@ -90,9 +87,6 @@ function loadDoc() {
     // "rarityname":"Common"  ,"productsname":"Sting",
     // "productsquantity":1000,"productsprice":25
 
-    //Need to be synchronous in order to set the values
-    addCategoryOptions(false);
-
     var table = document.getElementById(TableLocationID);
 
     //Add Table Headers
@@ -115,7 +109,6 @@ function loadDoc() {
 
     table.createTBody();
 
-
     // Add parameters in string to search form
     let form = document.getElementById(FormLocationID);
     let queryString = location.search;
@@ -123,7 +116,7 @@ function loadDoc() {
 
     for (const [key, value] of params.entries()) {
         let query = form.querySelectorAll(`[name=${key}]`);
-        if (query.length == 1) {
+        if (query.length == 1 && value != null) {
             query[0].value = value;
         }
     }
@@ -156,6 +149,7 @@ function updateProducts(reset = false) {
             displayTableData(TableLocationID, resArr);
         }
     }
+
     var paramaters = "";
     if (reset == false) {
         //Add paramaters to string
@@ -198,39 +192,10 @@ function updateProducts(reset = false) {
 }
 
 /************************************************************
- *  Add category options to the Select tag
- ************************************************************/
-function addCategoryOptions(async = true) {
-    var x = document.getElementById(CatagoryFieldID);
-
-    //Create ajax request to get the categorys
-    if (window.XMLHttpRequest) {
-        // code for modern browsers
-        var xhr = new XMLHttpRequest();
-    } else {
-        // code for old IE browsers
-        var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var resArr = JSON.parse(this.responseText);
-            resArr.forEach(element => {
-                var option = document.createElement("option");
-                option.text = element.name;
-                option.setAttribute("Value", element.name);
-                x.add(option);
-            });
-        }
-    }
-    xhr.open("GET", "/api/Category", async);
-    xhr.send();
-}
-
-/************************************************************
  *  Add subcategory options to the Select tag
  ************************************************************/
 function addSubCategoryOptions(reset = false) {
-    var x = document.getElementById(SubCatagoryFieldID);
+    let x = document.getElementById(SubCatagoryFieldID);
 
     //Remove Existing subCategory options
     var list = x.getElementsByTagName("option")
@@ -266,6 +231,100 @@ function addSubCategoryOptions(reset = false) {
     }
 }
 
+/************************************************************
+ *  Almost the same as addSubCategoryOptions()
+ *  But set its value then calls loadDoc()
+ ************************************************************/
+function loadAddSubCategoryOptions() {
+    let x = document.getElementById(SubCatagoryFieldID);
+
+    //Remove Existing subCategory options
+    var list = x.getElementsByTagName("option")
+    while (list.length > 1) {
+        list[list.length - 1].remove();
+    }
+
+    //Query data base for sub categroy options
+    if (window.XMLHttpRequest) {
+        // code for modern browsers
+        xhr = new XMLHttpRequest();
+    } else {
+        // code for old IE browsers
+        xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var resArr = JSON.parse(this.responseText);
+            let categoryName = document.getElementById(CatagoryFieldID);
+            resArr.forEach(element => {
+                if (categoryName.value == element.categoryname) {
+                    var option = document.createElement("option");
+                    option.text = element.sub_categoryname;
+                    option.setAttribute("Value", element.sub_categoryname);
+                    x.add(option);
+                }
+            });
+
+            // Set the value to the value in the URL
+            let form = document.getElementById(FormLocationID);
+            let queryString = location.search;
+            let params = new URLSearchParams(queryString);
+
+            let query = form.querySelectorAll(`[name=SubCategory]`);
+
+            if (query.length == 1 && params.get("SubCategory") != null) {
+                query[0].value = params.get("SubCategory");
+            }
+            loadDoc();
+        }
+    }
+    xhr.open("GET", "/api/SubcategoryByName", true);
+    xhr.send();
+}
+
+/************************************************************
+ *  Add category options to the Select tag
+ *  Then load subcategory options
+ ************************************************************/
+function addCategoryOptions(async = true) {
+    let x = document.getElementById(CatagoryFieldID);
+
+    //Create ajax request to get the categorys
+    if (window.XMLHttpRequest) {
+        // code for modern browsers
+        var xhr = new XMLHttpRequest();
+    } else {
+        // code for old IE browsers
+        var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var resArr = JSON.parse(this.responseText);
+            resArr.forEach(element => {
+                var option = document.createElement("option");
+                option.text = element.name;
+                option.setAttribute("Value", element.name);
+                x.add(option);
+            });
+
+            // Set the value to the value in the URL
+            let form = document.getElementById(FormLocationID);
+            let queryString = location.search;
+            let params = new URLSearchParams(queryString);
+
+            let query = form.querySelectorAll(`[name=Category]`);
+
+            if (query.length == 1 && params.get("Category") != null) {
+                query[0].value = params.get("Category");
+            }
+
+            loadAddSubCategoryOptions();
+        }
+
+    }
+    xhr.open("GET", "/api/Category", async);
+    xhr.send();
+}
 
 /************************************************************
  *  Run this code when the Document is done loading
@@ -274,7 +333,8 @@ function addSubCategoryOptions(reset = false) {
 if (document.addEventListener) { // For all major browsers, except IE 8 and earlier
     document.addEventListener("DOMContentLoaded", function () {
 
-        loadDoc();
+        //This funciton call other functions after is done
+        addCategoryOptions(true);
 
         document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();
@@ -291,7 +351,9 @@ if (document.addEventListener) { // For all major browsers, except IE 8 and earl
 
 } else if (document.attachEvent) { // For IE 8 and earlier versions
     document.attachEvent("load", function () {
-        loadDoc();
+
+        //This funciton call other functions after is done
+        addCategoryOptions(true);
 
         document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();

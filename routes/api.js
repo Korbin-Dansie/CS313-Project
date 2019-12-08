@@ -118,29 +118,6 @@ router.get('/SubcategoryByName', (req, res) => {
             })
         )
 });
-/**********************************************************
- * Test file
- * TODO: Delete later
- **********************************************************/
-router.get('/Data', (req, res) => {
-    const location = path.join(__dirname, '../Test/info.json');
-    fs.readFile(location, 'utf8', (err, data) => {
-        if (err) {
-            //console.error(err.name + ': ' + err.message);
-            res.writeHead(404, {
-                "Content-Type": "text/plain"
-            });
-            res.write("Error Unable To read file. At " + location);
-            res.end();
-            return;
-        }
-        let info = JSON.parse(data);
-        console.debug(info);
-        res.json(info);
-        res.end();
-    });
-
-});
 
 /**********************************************************
  * Functions Down Here
@@ -212,7 +189,9 @@ function returnWhere(data) {
                 break;
         }
     }
-    console.debug(TAG, data);
+    console.debug(TAG, "returnWhere:");
+    console.debug(data);
+
 
     //For each where clause add "and" between them
     var returnStr = "";

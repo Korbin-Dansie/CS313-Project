@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Test Page</title>
+    <link rel="icon" href="/img/KtechIcon.png" />
+    <link rel="stylesheet" href="/css/master.css">
+    <link rel="stylesheet" href="/css/rarity.css">
+    <link rel="stylesheet" href="/css/index.css">
+
+    <script src="/js/myscripts.js"></script>
+    <script src="/js/productUpdate.js"></script>
+    <script src="/js/productAdd.js"></script>
+<body>
+    <div id="body">
+        <%- include('../partials/topNav.ejs') %>
+
+
+        <div class="sideAdd">
+            <%- include('../partials/tableui.ejs') %>
+        </div>
+
+
+        <div class="mainContect">
+            <h1>Add Product</h1>
+            <!-- Display the Form UI -->
+            <form method="get" action="" id="addProductForm">
+                <!--Name-->
+                <label for="productAddProductName">Name<br></label>
+                <input type="search" id="productAddProductName" name="ProductName">
+
+                <!--Price-->
+                <label for="productAddPrice">Price</label>
+                <input id="productAddPrice" type="text" name="Price">
+                <!--CatagoryField-->
+                <label for="productAddCatagoryField">Category</label>
+                <select id="productAddCatagoryField" name="Category">
+                    <option value="None">None</option>
+                </select>
+
+                <!--SubCategory-->
+                <label for="productAddSubCategory">Subcategory</label>
+                <select id="productAddSubCatagoryField" name="SubCategory">
+                    <option value="None">None</option>
+                </select>
+
+                <!-- Rarity    -->
+                <label for="productAddRarity">Rarity</label>
+                <select id="productAdd" name="Rarity">
+                    <option value="None">None</option>
+                    <option value="Common">Common</option>
+                    <option value="Uncommon">Uncommon</option>
+                    <option value="Rare">Rare</option>
+                    <option value="Legendary">Legendary</option>
+                </select>
+                <br />
+
+                <div class="controlButtons">
+                    <input id="productAddResetButton" type="Reset" name="Reset" value="Clear">
+                    <input id="productAddSubmitButton" type="Submit" name="Submit" value="Submit">
+                </div>
+            </form>
+
+            <h1>Product List</h1>
+            <div id="ProductDiv"></div>
+
+            <table id="ProductTable"></table>
+        </div>
+        <!--End of Main mainContect-->
+
+        <footer>
+            <h2>This is a made up page</h2>
+            <p>We do not sell weapons and everything else on this site
+                is made up informaiton.</p>
+            <p>Also since this is made for school many of the links are broken.</p>
+            Copyright 2019. All Rights Reserved
+            <p id="finePrint"><small>We make <strong>no promise</strong> what so ever. Everything up above is made up.
+                    If you order a weapon from up it may <strong>never even show up.</strong></small></p>
+
+        </footer>
+
+    </div>
+    <!--End of body-->
+
+</body>
+
+</html>

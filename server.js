@@ -27,6 +27,25 @@ app.use('/test', express.static(path.join(__dirname, 'Test')))
  **********************************************************/
 app.get('/', readIndexFile);
 
+/*
+var cb0 = function (req, res, next) {
+  res.write('CB0')
+  next()
+},
+
+var cb1 = function (req, res, next) {
+  res.write('CB1')
+  next()
+}
+
+var cb2 = function (req, res) {
+  res.write('Hello from C2!')
+  res.end();
+}
+
+app.get('/example/c', [cb0, cb1, cb2])
+*/
+
 /**********************************************************
  * Route for api
  **********************************************************/
@@ -40,7 +59,7 @@ const login = require('./routes/login');
 app.use('/login/', login);
 
 /**********************************************************
- * Route for admin
+ * Route for login
  **********************************************************/
 const admin = require('./routes/admin');
 app.use('/admin/', admin);

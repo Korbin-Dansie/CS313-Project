@@ -353,7 +353,7 @@ if (document.addEventListener) { // For all major browsers, except IE 8 and earl
     document.attachEvent("load", function () {
 
         //This funciton call other functions after is done
-        addCategoryOptions(true);
+        (true);
 
         document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();

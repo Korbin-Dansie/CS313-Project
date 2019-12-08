@@ -12,7 +12,7 @@ function addProduct() {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
-            console.log("Here");
+            updateProducts();
         };
     }
     var paramaters = "?";
@@ -64,12 +64,13 @@ function productAddSubCategoryOptions(reset = false) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var resArr = JSON.parse(this.responseText);
+                console.log(resArr);
                 let categoryName = document.getElementById(ProductAddCatagoryFieldID);
                 resArr.forEach(element => {
-                    if (categoryName.value == element.categoryname) {
+                    if (categoryName.value == element.categoryid) {
                         var option = document.createElement("option");
                         option.text = element.sub_categoryname;
-                        option.setAttribute("Value", element.sub_categoryname);
+                        option.setAttribute("Value", element.id);
                         x.add(option);
                     }
                 });
@@ -101,7 +102,7 @@ function productAddCategoryOptions(async = true) {
             resArr.forEach(element => {
                 var option = document.createElement("option");
                 option.text = element.name;
-                option.setAttribute("Value", element.name);
+                option.setAttribute("Value", element.id);
                 x.add(option);
             });
         }
@@ -122,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById(ProductAddFormLocationID).addEventListener("submit", function (event) {
         event.preventDefault();
         addProduct();
+        
     });
 
     document.getElementById(ProductAddFormLocationID).addEventListener("reset", function (event) {

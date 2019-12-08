@@ -36,23 +36,33 @@ router.get('/addProduct/addValidation', (req, res) => {
     console.debug(TAG, "addValidation:");
     var result = [];
 
-    for (var i in req.query)
-        result.push([i, req.query[i]]);
+    //Add to array
+    if (req.query.ProductName) {
+        result.push(req.query.ProductName);
+    }
+    if (req.query.Price) {
+        result.push(req.query.Price);
+    }
+    if (req.query.SubCategory) {
+        result.push(req.query.SubCategory);
+    }
+    if (req.query.Rarity) {
+        result.push(req.query.Rarity);
+    }
+    if (req.query.Quantity) {
+        result.push(req.query.Quantity);
+    }
 
-    console.debug((result));
+    console.debug(result);
+    console.log(req.query);
 
 
-    let statment = 'insert into products (name, price, sub_categoryid, rarityid, quantity
-        \) VALUES ($1, $2, $3, $4, $5)';
+    let statment = 'insert into products (name, price, sub_categoryid, rarityid, quantity) VALUES ($1, $2, $3, $4, $5)';
 
     pool
         .query(statment, result)
-        .then(res => console.log(res.rows[0].name)) // brianc
         .catch(err => console.error('Error executing query', err.stack))
-
-    res.end();
-
-
+        res.end();
 });
 
 /**********************************************************

@@ -25,7 +25,7 @@
         <div class="mainContect">
             <h1>Add Product</h1>
             <!-- Display the Form UI -->
-            <form method="get" action="" id="addProductForm">
+            <form method="get" id="addProductForm">
                 <!--Name-->
                 <label for="productAddProductName">Name<br></label>
                 <input type="search" id="productAddProductName" name="ProductName">
@@ -49,19 +49,21 @@
                 <label for="productAddRarity">Rarity</label>
                 <select id="productAdd" name="Rarity">
                     <option value="None">None</option>
-                    <option value="Common">Common</option>
-                    <option value="Uncommon">Uncommon</option>
-                    <option value="Rare">Rare</option>
-                    <option value="Legendary">Legendary</option>
+                    <option value="1">Common</option>
+                    <option value="2">Uncommon</option>
+                    <option value="3">Rare</option>
+                    <option value="4">Legendary</option>
                 </select>
-                <br />
+                
+                <label for="productAddQuantity">Quantity</label>
+                <input type="text" id="productAddQuantity" name="Quantity">
 
                 <div class="controlButtons">
                     <input id="productAddResetButton" type="Reset" name="Reset" value="Clear">
                     <input id="productAddSubmitButton" type="Submit" name="Submit" value="Submit">
                 </div>
-            </form>
 
+            </form>
             <h1>Product List</h1>
             <div id="ProductDiv"></div>
 

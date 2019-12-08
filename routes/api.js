@@ -105,7 +105,7 @@ router.get('/SubcategoryByID', (req, res) => {
  * {"id":1,"sub_categoryname":"Short_Sword","categoryname":"Sword"}
  **********************************************************/
 router.get('/SubcategoryByName', (req, res) => {
-    var sql = "SELECT sub_category.id, sub_category.name AS Sub_CategoryName , category.name AS CategoryName FROM public.sub_category left JOIN category ON sub_category.categoryid = category.id";
+    var sql = "SELECT sub_category.id, sub_category.name AS Sub_CategoryName , category.id AS Categoryid, category.name AS CategoryName FROM public.sub_category left JOIN category ON sub_category.categoryid = category.id";
     pool
         .query(sql)
         .then(result => {

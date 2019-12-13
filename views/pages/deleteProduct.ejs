@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8" />
     <title>Test Page</title>
@@ -9,26 +10,26 @@
     <link rel="stylesheet" href="/css/index.css">
 
     <script src="/js/myscripts.js"></script>
+    <script src="/js/productUpdate.js"></script>
+    <script src="/js/productDelete.js"></script>
 
-    <base href="admin/" />
 <body>
     <div id="body">
         <%- include('../partials/topNav.ejs') %>
 
 
         <div class="sideAdd">
+            <%- include('../partials/tableui.ejs') %>
         </div>
 
 
         <div class="mainContect">
-            <h1>Admin Home page</h1>
+            <h1>Delete Product</h1>
+            <div id="ProductDiv"></div>
 
-            <h2>Products</h2>
-            <ul>
-                <li><a href="addProduct">Add Product</a></li>
-                <li><a href="deleteProduct">DeleteProduct</a></li>
-            </ul>
+            <table id="ProductTable"></table>
         </div>
+        <!--End of Main mainContect-->
 
         <footer>
             <h2>This is a made up page</h2>

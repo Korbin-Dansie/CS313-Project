@@ -26,6 +26,8 @@ router.get('/', readAdminIndexFile);
  * Add Products
  **********************************************************/
 router.get('/addProduct', readAddProductFile);
+router.get('/deleteProduct', readDeleteProductFile);
+
 
 /**********************************************************
  * Add Products
@@ -77,6 +79,12 @@ function readAddProductFile(req, res) {
     //console.log("Current path is: "+ path.join(__dirname));
     res.render('pages/addProduct');
 }
+
+function readDeleteProductFile(req, res) {
+    //console.log("Current path is: "+ path.join(__dirname));
+    res.render('pages/deleteProduct');
+}
+
 
 /**********************************************************
  * Export File

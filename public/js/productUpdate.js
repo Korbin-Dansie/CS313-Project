@@ -3,13 +3,22 @@
  ************************************************************/
 const TableLocationID = "ProductTable";
 const FormLocationID = "SearchForm";
-const CatagoryFieldID = "CatagoryField"
-const SubCatagoryFieldID = "SubCatagoryField"
+const CatagoryFieldID = "CatagoryField";
+const SubCatagoryFieldID = "SubCatagoryField";
+
+var showID = Boolean(false);
 
 function addRowData(row, data) {
     row.setAttribute("Class", "TableBody");
-
+    //console.log(data);
     //Display all the data
+    if (data.productsid != undefined) {
+        var cell = row.insertCell(-1);
+        cell.innerHTML = data.productsid;
+        if(showID == false){
+            cell.style.display = "none";
+        }
+    }
     if (data.categoryname != undefined) {
         var cell = row.insertCell(-1);
         cell.innerHTML = data.categoryname;
@@ -96,6 +105,7 @@ function loadDoc() {
 
     //Add each cell
     var HeaderText = new Array();
+    HeaderText.push("ID");
     HeaderText.push("Category");
     HeaderText.push("Subcategory");
     HeaderText.push("Name");
@@ -105,6 +115,12 @@ function loadDoc() {
     HeaderText.forEach(element => {
         var cell = hrow.insertCell(-1);
         cell.innerHTML = element;
+        //console.log(element);
+        
+        //Hide ID column
+        if(element == "ID" && showID == false){
+            cell.style.display = "none";
+        }
     });
 
     table.createTBody();

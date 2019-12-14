@@ -34,6 +34,7 @@ function addProduct() {
         }
     }
 
+    document.getElementById(ProductAddFormLocationID).reset();
     paramaters = paramaters.substring(0, paramaters.length - 1);
     xhttp.open("GET", "addProduct/addValidation" + paramaters, true);
     xhttp.send();
@@ -123,7 +124,6 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById(ProductAddFormLocationID).addEventListener("submit", function (event) {
         event.preventDefault();
         addProduct();
-        
     });
 
     document.getElementById(ProductAddFormLocationID).addEventListener("reset", function (event) {

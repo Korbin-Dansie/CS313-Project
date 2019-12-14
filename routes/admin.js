@@ -28,7 +28,6 @@ router.get('/', readAdminIndexFile);
 router.get('/addProduct', readAddProductFile);
 router.get('/deleteProduct', readDeleteProductFile);
 
-
 /**********************************************************
  * Add Products
  **********************************************************/
@@ -63,9 +62,31 @@ router.get('/addProduct/addValidation', (req, res) => {
 
     pool
         .query(statment, result)
+        .then(() => {
+            res.end();
+        })
         .catch(err => console.error('Error executing query', err.stack))
-        res.end();
 });
+
+router.get('/deleteProduct/deleteValidation', (req, res) => {
+    var result = [];
+
+    //Add to array
+    if (req.query.id) {
+        result.push(req.query.id);
+    }
+
+
+    let statment = 'DELETE FROM public.products WHERE id=$1';
+
+    pool
+        .query(statment, result)
+        .then(() => {
+            res.end();
+        })
+        .catch(err => console.error('Error executing query', err.stack))
+});
+
 
 /**********************************************************
  * Function Under Here

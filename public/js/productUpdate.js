@@ -7,6 +7,8 @@ const CatagoryFieldID = "CatagoryField";
 const SubCatagoryFieldID = "SubCatagoryField";
 
 var showID = Boolean(false);
+var showOrder = Boolean(false);
+
 
 function addRowData(row, data) {
     row.setAttribute("Class", "TableBody");
@@ -15,7 +17,7 @@ function addRowData(row, data) {
     if (data.productsid != undefined) {
         var cell = row.insertCell(-1);
         cell.innerHTML = data.productsid;
-        if(showID == false){
+        if (showID == false) {
             cell.style.display = "none";
         }
     }
@@ -116,9 +118,9 @@ function loadDoc() {
         var cell = hrow.insertCell(-1);
         cell.innerHTML = element;
         //console.log(element);
-        
+
         //Hide ID column
-        if(element == "ID" && showID == false){
+        if (element == "ID" && showID == false) {
             cell.style.display = "none";
         }
     });
@@ -187,6 +189,13 @@ function updateProducts(reset = false) {
         //For select elements
         var selectElements = formLocation.getElementsByTagName("SELECT");
         for (var i = 0, element; element = selectElements[i++];) {
+            if(element.getAttribute("name") == "OrderBy"){
+                if(element.value == "ASC"){
+                    //Do Nothing
+                    continue;
+                }
+            }
+            
             if (element.value != "" && element.value != "None") {
                 getString += element.getAttribute("name") + "=" + element.value + "&";
             }
@@ -200,10 +209,55 @@ function updateProducts(reset = false) {
     }
     //Else if we are resting the form
     else {
+        window.history.replaceState(null, null, "/");
         addSubCategoryOptions(true);
     }
 
     xhr.open("GET", "/api/productTable" + paramaters, true);
+    xhr.send();
+}
+
+/************************************************************
+ *  Add category options to the Select tag
+ *  Then load subcategory options
+ ************************************************************/
+function addCategoryOptions(async = true) {
+    let x = document.getElementById(CatagoryFieldID);
+
+    //Create ajax request to get the categorys
+    if (window.XMLHttpRequest) {
+        // code for modern browsers
+        var xhr = new XMLHttpRequest();
+    } else {
+        // code for old IE browsers
+        var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            var resArr = JSON.parse(this.responseText);
+            resArr.forEach(element => {
+                var option = document.createElement("option");
+                option.text = element.name;
+                option.setAttribute("Value", element.name);
+                x.add(option);
+            });
+
+            // Set the value to the value in the URL
+            let form = document.getElementById(FormLocationID);
+            let queryString = location.search;
+            let params = new URLSearchParams(queryString);
+
+            let query = form.querySelectorAll(`[name=Category]`);
+
+            if (query.length == 1 && params.get("Category") != null) {
+                query[0].value = params.get("Category");
+            }
+
+            loadAddSubCategoryOptions();
+        }
+
+    }
+    xhr.open("GET", "/api/Category", async);
     xhr.send();
 }
 
@@ -298,48 +352,22 @@ function loadAddSubCategoryOptions() {
     xhr.send();
 }
 
-/************************************************************
- *  Add category options to the Select tag
- *  Then load subcategory options
- ************************************************************/
-function addCategoryOptions(async = true) {
-    let x = document.getElementById(CatagoryFieldID);
+function logKey(e) {
+    //console.log(` ${e.keyCode}` + " " + `${e.code}`);
 
-    //Create ajax request to get the categorys
-    if (window.XMLHttpRequest) {
-        // code for modern browsers
-        var xhr = new XMLHttpRequest();
-    } else {
-        // code for old IE browsers
-        var xhr = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var resArr = JSON.parse(this.responseText);
-            resArr.forEach(element => {
-                var option = document.createElement("option");
-                option.text = element.name;
-                option.setAttribute("Value", element.name);
-                x.add(option);
-            });
+    //Backquote
+    // Just to the left of the number 1 key
+    if (event.isComposing || event.keyCode === 192) {
+        let category = document.getElementById("SortBy");
 
-            // Set the value to the value in the URL
-            let form = document.getElementById(FormLocationID);
-            let queryString = location.search;
-            let params = new URLSearchParams(queryString);
-
-            let query = form.querySelectorAll(`[name=Category]`);
-
-            if (query.length == 1 && params.get("Category") != null) {
-                query[0].value = params.get("Category");
+        category.childNodes.forEach(child => {
+            if(child.nodeName == "OPTION"){
+                child.removeAttribute("hidden"); 
             }
-
-            loadAddSubCategoryOptions();
-        }
-
+        })
+        return;
     }
-    xhr.open("GET", "/api/Category", async);
-    xhr.send();
+
 }
 
 /************************************************************
@@ -351,26 +379,63 @@ if (document.addEventListener) { // For all major browsers, except IE 8 and earl
 
         //This funciton call other functions after is done
         addCategoryOptions(true);
+        document.addEventListener('keydown', logKey);
 
-        document.getElementById(FormLocationID).addEventListener("submit", function (event) {
-            event.preventDefault();
-            updateProducts();
-        });
-        document.getElementById(FormLocationID).addEventListener("reset", function (event) {
-            updateProducts(true);
-        });
+        const config = {
+            attributes: false,
+            childList: true,
+            subtree: true
+        };
+    
+        const callback = function (mutationsList, observer) {
+            // Use traditional 'for loops' for IE 11
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    //console.log(mutation.addedNodes.length);
+                    //console.log(mutation);
+    
+                    if (mutation.addedNodes.length > 0) {
+                        if (mutation.addedNodes[0].parentNode.nodeName == "TBODY" && mutation.addedNodes[0].nodeName == "TR") {
+    
+                            let row = mutation.addedNodes[0];
+    
+                            //Get Row data
+                            let data = new Array();
+                            row.childNodes.forEach(element => {
+                                data.push(element.innerHTML);
+                                //console.log(element.innerHTML);
+                            });
+    
+                            //Create a button for deleting rows
+                            let cell = row.insertCell(0);
+                            let btn = document.createElement("BUTTON");
+                            btn.innerHTML = "Delete";
+    
+                            btn.onclick = function () {
+                                deleteRow(data[0]);
+                            };
+    
+                            //Add button to Cell
+                            cell.appendChild(btn);
+    
+    
+                        } else if (mutation.addedNodes[0].parentNode.nodeName == "THEAD" && mutation.addedNodes[0].nodeName == "TR") {
+                            let row = mutation.addedNodes[0];
+                            let cell = row.insertCell(0);
+                            cell.innerHTML = "";
+                        }
+                    }
+                } 
+            }
+        };
+    
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
+    
+        // Start observing the target node for configured mutations
+        observer.observe(table, config);
 
-        document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
-            addSubCategoryOptions();
-        });
-    });
-
-} else if (document.attachEvent) { // For IE 8 and earlier versions
-    document.attachEvent("load", function () {
-
-        //This funciton call other functions after is done
-        (true);
-
+        
         document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();
             updateProducts();

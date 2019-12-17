@@ -15,7 +15,7 @@ function addRowData(row, data) {
     if (data.productsid != undefined) {
         var cell = row.insertCell(-1);
         cell.innerHTML = data.productsid;
-        if(showID == false){
+        if (showID == false) {
             cell.style.display = "none";
         }
     }
@@ -49,8 +49,8 @@ function displayTableData(tableID, data) {
 
     //Delete all table rows that contain td
     var table = document.getElementById(tableID);
-    //Clear body
 
+    //Clear body
     var body = table.getElementsByTagName("tbody")[0];
     body.innerHTML = "";
 
@@ -60,32 +60,7 @@ function displayTableData(tableID, data) {
         var row = body.insertRow(-1); //Create new row and make it the last row
         addRowData(row, obj);
 
-    } //For var i
-
-    /***
-     *  Insert latter would be nice to add but 
-     *  might confuse people reviewing code
-     *  Would have to delete the for loop above
-     */
-    /*
-    var insertLater = new Array();
-    for (var i = 0; i < data.length; i++) {
-        var obj = data[i];
-        //If the quanity is zero add it to the end else add it second to last
-        if(obj.productsquantity > 0){
-            var row = table.insertRow(-1); //Create new row and make it the last row
-            addRowData(row, obj);
-        }
-        else{
-            insertLater.push(obj);
-            continue;
-        }
-    } //For var i
-    insertLater.forEach(obj =>{
-        var row = table.insertRow(-1); //Create new row and make it the last row
-        addRowData(row, obj)
-    });
-    */
+    }
 }
 /************************************************************
  *  Run this function on load
@@ -116,9 +91,9 @@ function loadDoc() {
         var cell = hrow.insertCell(-1);
         cell.innerHTML = element;
         //console.log(element);
-        
+
         //Hide ID column
-        if(element == "ID" && showID == false){
+        if (element == "ID" && showID == false) {
             cell.style.display = "none";
         }
     });
@@ -188,15 +163,19 @@ function updateProducts(reset = false) {
         var selectElements = formLocation.getElementsByTagName("SELECT");
         for (var i = 0, element; element = selectElements[i++];) {
             if (element.value != "" && element.value != "None") {
-                getString += element.getAttribute("name") + "=" + element.value + "&";
+                if (element.getAttribute("name") != "OrderBy" && element.value != "ASC") {
+                    getString += element.getAttribute("name") + "=" + element.value + "&";
+                } else if (element.getAttribute("name") == "OrderBy" && element.value != "ASC") {
+                    getString += element.getAttribute("name") + "=" + element.value + "&";
+                }
             }
         }
+
         //Trim last charactar of the string to prevent errors
         getString = getString.substring(0, getString.length - 1);
         window.history.replaceState(null, null, getString);
 
         paramaters = getString;
-
     }
     //Else if we are resting the form
     else {
@@ -248,57 +227,6 @@ function addSubCategoryOptions(reset = false) {
 }
 
 /************************************************************
- *  Almost the same as addSubCategoryOptions()
- *  But set its value then calls loadDoc()
- ************************************************************/
-function loadAddSubCategoryOptions() {
-    let x = document.getElementById(SubCatagoryFieldID);
-
-    //Remove Existing subCategory options
-    var list = x.getElementsByTagName("option")
-    while (list.length > 1) {
-        list[list.length - 1].remove();
-    }
-
-    //Query data base for sub categroy options
-    if (window.XMLHttpRequest) {
-        // code for modern browsers
-        xhr = new XMLHttpRequest();
-    } else {
-        // code for old IE browsers
-        xhr = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var resArr = JSON.parse(this.responseText);
-            let categoryName = document.getElementById(CatagoryFieldID);
-            resArr.forEach(element => {
-                if (categoryName.value == element.categoryname) {
-                    var option = document.createElement("option");
-                    option.text = element.sub_categoryname;
-                    option.setAttribute("Value", element.sub_categoryname);
-                    x.add(option);
-                }
-            });
-
-            // Set the value to the value in the URL
-            let form = document.getElementById(FormLocationID);
-            let queryString = location.search;
-            let params = new URLSearchParams(queryString);
-
-            let query = form.querySelectorAll(`[name=SubCategory]`);
-
-            if (query.length == 1 && params.get("SubCategory") != null) {
-                query[0].value = params.get("SubCategory");
-            }
-            loadDoc();
-        }
-    }
-    xhr.open("GET", "/api/SubcategoryByName", true);
-    xhr.send();
-}
-
-/************************************************************
  *  Add category options to the Select tag
  *  Then load subcategory options
  ************************************************************/
@@ -315,6 +243,16 @@ function addCategoryOptions(async = true) {
     }
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
+            //Clear all select elements 
+            var list = x.childNodes;
+            console.log(x.childElementCount);
+            for (let i = x.childElementCount - 1; i > 0; i--) {
+                console.log(x.children[i]);
+                if (x.children[i].nodeName == "OPTION") {
+                    x.removeChild(x.children[i]);
+                }
+            }
+
             var resArr = JSON.parse(this.responseText);
             resArr.forEach(element => {
                 var option = document.createElement("option");
@@ -322,19 +260,6 @@ function addCategoryOptions(async = true) {
                 option.setAttribute("Value", element.name);
                 x.add(option);
             });
-
-            // Set the value to the value in the URL
-            let form = document.getElementById(FormLocationID);
-            let queryString = location.search;
-            let params = new URLSearchParams(queryString);
-
-            let query = form.querySelectorAll(`[name=Category]`);
-
-            if (query.length == 1 && params.get("Category") != null) {
-                query[0].value = params.get("Category");
-            }
-
-            loadAddSubCategoryOptions();
         }
 
     }
@@ -349,12 +274,59 @@ function addCategoryOptions(async = true) {
 if (document.addEventListener) { // For all major browsers, except IE 8 and earlier
     document.addEventListener("DOMContentLoaded", function () {
 
+        loadDoc();
         //This funciton call other functions after is done
-        addCategoryOptions(true);
+        addCategoryOptions();
+
+
+        const config = {
+            attributes: false,
+            childList: true,
+            subtree: true
+        };
+
+        /*
+        Set the Category option to the one in the url when the page loads
+        then disconnect the MutationObserver because we dont need it anymore
+        */
+        const callback = function (mutationsList, observer) {
+            // Use traditional 'for loops' for IE 11
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    //console.log(mutation.addedNodes.length);
+                    //console.log(mutation);
+
+                    if (mutation.addedNodes.length > 0) {
+                        let element = mutation.addedNodes[0];
+
+                        // Set the value to the value in the URL
+                        let form = document.getElementById(FormLocationID);
+                        let queryString = location.search;
+                        let params = new URLSearchParams(queryString);
+
+                        let query = form.querySelectorAll(`[name=Category]`);
+
+                        if (query.length == 1 && params.get("Category") != null) {
+                            query[0].value = params.get("Category");
+                        }
+                        observer.disconnect();
+                    }
+                }
+            }
+        }
+
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
+
+        // Start observing the target node for configured mutations
+        let field = document.getElementById(CatagoryFieldID);
+        observer.observe(field, config);
+
 
         document.getElementById(FormLocationID).addEventListener("submit", function (event) {
             event.preventDefault();
             updateProducts();
+            addCategoryOptions();
         });
         document.getElementById(FormLocationID).addEventListener("reset", function (event) {
             updateProducts(true);
@@ -365,22 +337,4 @@ if (document.addEventListener) { // For all major browsers, except IE 8 and earl
         });
     });
 
-} else if (document.attachEvent) { // For IE 8 and earlier versions
-    document.attachEvent("load", function () {
-
-        //This funciton call other functions after is done
-        (true);
-
-        document.getElementById(FormLocationID).addEventListener("submit", function (event) {
-            event.preventDefault();
-            updateProducts();
-        });
-        document.getElementById(FormLocationID).addEventListener("reset", function (event) {
-            updateProducts(true);
-        });
-
-        document.getElementById(CatagoryFieldID).addEventListener("change", function (event) {
-            addSubCategoryOptions();
-        });
-    });
 }

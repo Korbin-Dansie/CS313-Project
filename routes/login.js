@@ -21,7 +21,7 @@ const pool = new Pool({
  * Home Page
  **********************************************************/
 router.get('/', (req, res) => {
-    res.redirect("login/sign-in");
+    res.redirect("login/sign-up");
     res.end();
     return;
 });
@@ -29,19 +29,24 @@ router.get('/', (req, res) => {
 /**********************************************************
  * Login Page
  **********************************************************/
-router.get('/sign-in', readLoginFile);
-router.post('/sign-in/callback', loginVerification);
+router.get('/sign-up', readSignupFile);
+router.post('/sign-up/callback', signupVerification);
 
 /**********************************************************
  * Function Down Here
  **********************************************************/
-function readLoginFile(req, res) {
+function readSignupFile(req, res) {
     //console.log("Current path is: "+ path.join(__dirname));
-    res.render('pages/login');
+    res.render('pages/signup');
 }
 
-function loginVerification(req, res) {
+function signupVerification(req, res) {
+
+    //Then name And password variables
     let name = req.body.UserName;
+    let pass = req.body.UserPassword;
+    let saltRounds = 10;
+
     /*
     Usernames can contain characters 
     a-z, A-Z, 0-9, underscores, periods, and dashes.
@@ -51,42 +56,50 @@ function loginVerification(req, res) {
     Max length is 30 chars.
     */
     let patt = new RegExp(/^(?!.*\.\.)(?!.*(\.|_{2,}|-{2,})$)[^\W][\w.\-]{0,29}$/); //acceptable name
-    let result = patt.test(name);
-    console.log(TAG, result);
+    let data = patt.test(name);
+    console.log(TAG, data);
     //Username is invalid
-    if(result == false){
+    if (data == false) {
         res.redirect("../sign-in");
         res.end();
         return;
     }
 
-    let pass = req.body.UserPassword;
 
     //console.log("Current path is: "+ path.join(__dirname));
-    bcrypt.hash(req.body.UserPassword, saltRounds, function (err, hash) {
-        // Store hash in database
-        res.write("<h1>Testing Submiting form</h1><br>");
-        res.write("<a href=\"../sign-in\">Back</a><br>");
+    //bcrypt.hash(req.body.UserPassword, saltRounds, function (err, hash) {}
+    //bcrypt.compare(req.body.UserPassword, hash, (err, response) => {}
 
-        res.write("Name = " + name);
-        res.write("<br>");
-        res.write("Valid Name = " + result);
-        res.write("<br><br>");
+    console.debug(TAG, "loginVerification:");
+    var result = [];
 
-        res.write("Pass = " + pass);
-        res.write("<br>");
-        res.write("Hash = " + hash);
-        res.write("<br>");
-        res.write("Compare = ");
-        bcrypt.compare(req.body.UserPassword, hash, (err, response) => {
-            if (response) {
-                res.write("true");
-            } else {
-                res.write("false");
-            }
-            res.end();
+    //Add to array
+    if (name) {
+        result.push(name);
+    }
+    if (pass) {
+        console.log(pass);
+        bcrypt.hash(pass, saltRounds, (err, hash) => {
+            result.push(hash);
+            console.debug(result);
+
+
+            let statment = 'insert into customers (username, userpassword) VALUES ($1, $2)';
+        
+            pool
+                .query(statment, result)
+                .then(() => {
+                    res.redirect("../sign-in");
+                    res.end();
+                })
+                .catch(err => {
+                    console.error('Error executing query', err.stack);
+                    res.redirect("/sign-up");
+                    res.end();
+                })
+        
         });
-    });
+    }
 }
 
 /**********************************************************

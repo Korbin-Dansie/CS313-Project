@@ -1,20 +1,23 @@
 // server.js
 // load the things we need
+const TAG = "sever.js:";
+
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const app = express();
 
-const session = require('express-session');
+var session = require('express-session');
 app.use(session({
   secret: 'Shadow',
   resave: false,
   saveUninitialized: true
 }));
 
-const TAG = "sever.js:";
-
 require('dotenv').config();
+
+
+
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
@@ -23,6 +26,31 @@ app.use(bodyParser.urlencoded({
 })); // support encoded bodies
 
 const port = process.env.PORT || 5000;
+
+
+// Sets a variable to add to the EJS files for all requests
+app.use(function(req, res, next) {
+  if(session != null){
+    res.locals.userName = session.Cookie.userName;
+  }
+  else{
+    //res.locals.userName = undefined;
+  }
+  next();
+});
+app.use('/logout', function(req, res){
+  session = null;
+  res.redirect("/")
+  res.end();
+  return;
+})
+app.use('/sign-in', function(req, res){
+  session = require('express-session');
+  res.redirect("/")
+  res.end();
+  return;
+})
+
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -114,18 +142,8 @@ function readUnkownPage(req, res) {
   });
 }
 
+
 function readIndexFile(req, res) {
   //console.log("Current path is: "+ path.join(__dirname));
-
-  //Create a json obj
-  let results = {};
-  let i = 0;
-
-  if (session.Cookie.userName != undefined) {
-    results["userName"] = session.Cookie.userName;
-  } else {
-    results["userName"] = "";
-  }
-
-  res.render('pages/index', results);
+  res.render('pages/index');
 }

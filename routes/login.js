@@ -10,12 +10,13 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
-const session = require('express-session');
-router.use(session({
+var session = require('express-session');
+app.use(session({
     secret: 'Shadow',
     resave: false,
     saveUninitialized: true
 }));
+
 
 const connectionString = process.env.DATABASE_URL + "?ssl=true";
 const {
@@ -30,10 +31,20 @@ const pool = new Pool({
  * Home Page
  **********************************************************/
 router.get('/', (req, res) => {
-    res.redirect("login/sign-up");
+    res.redirect("/login/sign-up");
     res.end();
     return;
 });
+
+router.get('/profile', readProfilePage);
+
+router.get('/signout', function (req, res, next) {
+    session = null;
+    res.redirect('/logout');
+    res.end();
+    return;
+});
+
 
 /**********************************************************
  * Login Page
@@ -148,8 +159,9 @@ function signinVerification(req, res) {
                     bcrypt.compare(pass, hash, (err, response) => {
                         // res == true
                         if (response == true) {
+                            session = require('express-session');
                             session.Cookie.userName = responseDB.rows[0].username;
-                            res.redirect("/");
+                            res.redirect("/sign-in");
                         } else {
                             res.redirect("../sign-in");
                         }
@@ -170,6 +182,17 @@ function signinVerification(req, res) {
     }
 }
 
+function readProfilePage(req, res) {
+    //console.log("Current path is: "+ path.join(__dirname));
+
+    //If the varible is unset return to the sign in page
+    if (session.Cookie.userName == undefined) {
+        res.redirect("sign-in");
+        res.end();
+        return;
+    }
+    res.render('pages/profile');
+}
 
 /**********************************************************
  * Export File

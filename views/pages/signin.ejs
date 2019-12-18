@@ -6,7 +6,7 @@
   <link rel="icon" href="/img/KtechIcon.png" />
   <link rel="stylesheet" href="/css/master.css">
   <link rel="stylesheet" href="/css/index.css">
-  <link rel="stylesheet" href="/css/signupForm.css">
+  <link rel="stylesheet" href="/css/signinForm.css">
 
   <script src="/js/myscripts.js"></script>
 <body>
@@ -19,18 +19,19 @@
 
 
     <div class="mainContect">
-        <h1>Sign Up</h1>
-        <form action="sign-up/callback" method="post" id="signin">
+        <h1>Sign In</h1>
+        <form action="sign-in/callback" method="post" id="signin">
             <label for="Name">Name:</label>
             <input type="text" id="Name" name="UserName">
             <label for="Password">Password:</label>
             <input type="text" id="Password" name="UserPassword">
             <div class="submitButton">
+              <input type="reset" value="Clear">
                 <input type="submit" value="Submit">
             </div>
         </form>
         <p>or</p>
-        <p>Already have an account then sign in <a href="sign-in">here</a></p>
+        <p><a href="sign-up">Sign Up</a></p>
     </div><!--End of Main mainContect-->
 
     <footer>

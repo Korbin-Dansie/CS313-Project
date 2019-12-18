@@ -1,6 +1,7 @@
 <div class="topnav">
     <nav>
-        <h1><a href="/" id="shopHomeButton">Shadow-Steel Weapons</a></h1>
+        <h1><a href="/" id="shopHomeButton">Shadow-Steel Weapons</a>
+        </h1>
         <div id="navagation">
             <div id="Products">
                 <ul>
@@ -29,16 +30,24 @@
                 <div id="loginbar">
                     <div id="loginButton">
                         <!--Start of signin -->
+
+                        <% if(locals.userName){ %>
+                        <a href="/login/profile">
+                            <img src="/img/PersonIcon.png" alt="Login Icon">
+                            <%= userName %>
+                        </a>
+                        <% } else{ %>
                         <a href="/login/sign-in">
                             <img src="/img/PersonIcon.png" alt="Login Icon">
                             Login</a>
+                        <% } %>
+
                         <!--End of signin -->
                     </div>
                     <a href="shopingCart">
                         <img src="/img/ShopingCart.png" alt="Shoping Cart Icon">
                     </a>
                 </div>
-
             </div>
         </div>
     </nav>

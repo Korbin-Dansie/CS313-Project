@@ -20,20 +20,8 @@
     margin-top: 0px;
 }
 
- .submitButton{
-    display: flex;
+.submitButton{
     margin-top: 10px;
-}
-.submitButton input{
-    width: 50%;
-}
-
-.submitButton input:first-child{
-    margin-right: 3px;
-}
-
-.submitButton input:last-child{
-    margin-left: 3px;
 }
 
 .mainContect p{

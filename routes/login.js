@@ -1,4 +1,6 @@
 const express = require('express');
+
+const app = express();
 const router = express.Router();
 const TAG = "login.js:";
 
@@ -7,6 +9,13 @@ const path = require('path');
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+
+const session = require('express-session');
+router.use(session({
+    secret: 'Shadow',
+    resave: false,
+    saveUninitialized: true
+}));
 
 const connectionString = process.env.DATABASE_URL + "?ssl=true";
 const {
@@ -31,6 +40,9 @@ router.get('/', (req, res) => {
  **********************************************************/
 router.get('/sign-up', readSignupFile);
 router.post('/sign-up/callback', signupVerification);
+
+router.get('/sign-in', readSigninFile);
+router.post('/sign-in/callback', signinVerification);
 
 /**********************************************************
  * Function Down Here
@@ -57,10 +69,10 @@ function signupVerification(req, res) {
     */
     let patt = new RegExp(/^(?!.*\.\.)(?!.*(\.|_{2,}|-{2,})$)[^\W][\w.\-]{0,29}$/); //acceptable name
     let data = patt.test(name);
-    console.log(TAG, data);
+    //console.debug(TAG, data);
     //Username is invalid
     if (data == false) {
-        res.redirect("../sign-in");
+        res.redirect("../sign-up");
         res.end();
         return;
     }
@@ -70,7 +82,7 @@ function signupVerification(req, res) {
     //bcrypt.hash(req.body.UserPassword, saltRounds, function (err, hash) {}
     //bcrypt.compare(req.body.UserPassword, hash, (err, response) => {}
 
-    console.debug(TAG, "loginVerification:");
+    //console.debug(TAG, "loginVerification:");
     var result = [];
 
     //Add to array
@@ -78,14 +90,13 @@ function signupVerification(req, res) {
         result.push(name);
     }
     if (pass) {
-        console.log(pass);
         bcrypt.hash(pass, saltRounds, (err, hash) => {
             result.push(hash);
-            console.debug(result);
+            //console.debug(result);
 
 
             let statment = 'insert into customers (username, userpassword) VALUES ($1, $2)';
-        
+
             pool
                 .query(statment, result)
                 .then(() => {
@@ -94,13 +105,71 @@ function signupVerification(req, res) {
                 })
                 .catch(err => {
                     console.error('Error executing query', err.stack);
-                    res.redirect("/sign-up");
+                    res.redirect("../sign-up");
                     res.end();
                 })
-        
+
         });
     }
 }
+
+
+function readSigninFile(req, res) {
+    //console.log("Current path is: "+ path.join(__dirname));
+    res.render('pages/signin');
+}
+
+function signinVerification(req, res) {
+
+    //Then name And password variables
+    let name = req.body.UserName;
+    let pass = req.body.UserPassword;
+
+    //console.log("Current path is: "+ path.join(__dirname));
+    //bcrypt.hash(req.body.UserPassword, saltRounds, function (err, hash) {}
+    //bcrypt.compare(req.body.UserPassword, hash, (err, response) => {}
+
+    //console.debug(TAG, "loginVerification:");
+    var result = [];
+
+    //Add to array
+    if (name !== '' && pass !== '') {
+        result.push(name);
+        // userpassword
+        let statment = 'Select * FROM customers WHERE username = $1';
+
+        pool
+            .query(statment, result)
+            .then((responseDB) => {
+                console.debug(responseDB.rows);
+                if (responseDB.rows[0].userpassword != undefined) {
+                    let hash = responseDB.rows[0].userpassword;
+
+                    bcrypt.compare(pass, hash, (err, response) => {
+                        // res == true
+                        if (response == true) {
+                            session.Cookie.userName = responseDB.rows[0].username;
+                            res.redirect("/");
+                        } else {
+                            res.redirect("../sign-in");
+                        }
+                        res.end();
+                    });
+                } else {
+                    res.redirect("../sign-in");
+                    res.end();
+                }
+            })
+            .catch(err => {
+                console.error('Error executing query', err.stack);
+                res.end();
+            })
+    } else {
+        res.redirect("../sign-in");
+        res.end();
+    }
+}
+
 
 /**********************************************************
  * Export File

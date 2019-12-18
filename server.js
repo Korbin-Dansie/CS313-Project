@@ -4,11 +4,23 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const app = express();
+
+const session = require('express-session');
+app.use(session({
+  secret: 'Shadow',
+  resave: false,
+  saveUninitialized: true
+}));
+
+const TAG = "sever.js:";
+
 require('dotenv').config();
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(bodyParser.urlencoded({
+  extended: true
+})); // support encoded bodies
 
 const port = process.env.PORT || 5000;
 
@@ -104,5 +116,16 @@ function readUnkownPage(req, res) {
 
 function readIndexFile(req, res) {
   //console.log("Current path is: "+ path.join(__dirname));
-  res.render('pages/index');
+
+  //Create a json obj
+  let results = {};
+  let i = 0;
+
+  if (session.Cookie.userName != undefined) {
+    results["userName"] = session.Cookie.userName;
+  } else {
+    results["userName"] = "";
+  }
+
+  res.render('pages/index', results);
 }
